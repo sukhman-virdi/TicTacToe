@@ -69,6 +69,17 @@ body {
   padding-left: 9px;
 }
 
+#greeting{
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+}
+
 .signout-link {
   font-family: 'Nunito', sans-serif;
   font-size: 0.9rem;
