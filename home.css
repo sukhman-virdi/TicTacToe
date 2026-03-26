@@ -1,0 +1,184 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --amber: #f1b211;
+  --amber-hover: #f1b211;
+  --sidebar-bg: #f0f0f0;
+  --btn-bg: #d4d4d4;
+  --btn-hover: #c2c2c2;
+  --btn-text: #f0f0f0;
+  --bg: #ffffff;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 190px;
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  flex-shrink: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+} 
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  padding-top: 100px;
+  gap: 0;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 12px;
+  background: transparent;
+  border: none;
+  border-bottom-style: solid;
+  border-top-style: solid;
+  border-width: 1px;
+  color: #7c7c7c;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  border-left: 3px solid var(--amber);
+  padding-left: 9px;
+}
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  margin-left:190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  padding: 60px 80px;
+}
+
+/* ── Title ── */
+.title {
+  font-family: 'Righteous', cursive;
+  font-size: 10rem;
+  font-weight: 1200;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+
+  background: linear-gradient(219deg,
+    #186cb8 19%,
+    transparent 19%, transparent 20%,
+    #2a9a9f 20%, #2a9a9f 39%,
+    transparent 39%, transparent 40%,
+    #f1b211 40%, #f1b211 59%,
+    transparent 59%, transparent 60%,
+    #e83611 60%, #e83611 79%,
+    transparent 79%, transparent 80%,
+    #f9002f 80%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: block;
+  border: 2px solid #d4d4d4;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  color: #333;
+  background: transparent;
+  letter-spacing: 2px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.35s;
+}
+
+.btn span {
+  position: relative;
+  z-index: 2;
+}
+.btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+  align-items: center;
+}
+
+.btn::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: #f1b211;
+  transition: width 0.35s;
+  border-radius: 10px;
+}
+
+.btn:hover {
+  color: #fff;
+}
+
+.btn:hover::after {
+  width: 100%;
+}
+
+.btn-play {
+  width: 420px;
+  padding: 22px 0;
+  font-size: 1.5rem;
+}
+
+.btn-secondary {
+  width: 160px;
+  padding: 14px 0;
+  font-size: 1.1rem;
+}
+
+
+
+
+
+/*Resources:
+    Button animation: thelaazyguy - https://dev.to/webdeasy/top-20-css-buttons-animations-f41
+    Title text effect: Shireen Taj - https://font-tester.foxcraft.tech/text-effects
+
+
+
+
+*/

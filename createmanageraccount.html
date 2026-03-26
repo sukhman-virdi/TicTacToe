@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account - Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="createaccount.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='game.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+    </nav>
+  </div> 
+
+  <main class="main">
+    <div class="card">
+      <h1 class="title">Create Manager Account</h1>
+
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username"/>
+        <span class="field-msg" id="username-msg"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter email"/>
+        <span class="field-msg" id="email-msg"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password"/>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm password"/>
+        <span class="field-msg" id="password-msg"></span>
+      </div>
+
+      <button class="btn btn-play" onclick="handleSignup()">
+        <span>Create Account</span>
+      </button>
+
+      <p class="result-msg" id="result-msg"></p>
+
+      <p class="login-link">Already have an account? 
+        <a href="gameManagerLogin.html">Login</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    // Check username availability as user types
+    document.getElementById('username').addEventListener('input', function() {
+      const username = this.value.trim();
+      const msg = document.getElementById('username-msg');
+
+      if (username.length < 3) {
+        msg.textContent = 'Username must be at least 3 characters';
+        msg.className = 'field-msg error';
+        return;
+      }
+
+      fetch(`check_availability.php?field=Username&value=${encodeURIComponent(username)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.taken) {
+            msg.textContent = '✗ Username already taken';
+            msg.className = 'field-msg error';
+          } else {
+            msg.textContent = '✓ Username available';
+            msg.className = 'field-msg success';
+          }
+        });
+    });
+
+    // Check email availability as user types
+    document.getElementById('email').addEventListener('input', function() {
+      const email = this.value.trim();
+      const msg = document.getElementById('email-msg');
+
+      if (!email.includes('@')) return;
+
+      fetch(`check_availability.php?field=Email&value=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.taken) {
+            msg.textContent = '✗ Email already registered';
+            msg.className = 'field-msg error';
+          } else {
+            msg.textContent = '✓ Email available';
+            msg.className = 'field-msg success';
+          }
+        });
+    });
+
+    // Check passwords match
+    document.getElementById('confirm-password').addEventListener('input', function() {
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('password-msg');
+
+      if (this.value !== password) {
+        msg.textContent = '✗ Passwords do not match';
+        msg.className = 'field-msg error';
+      } else {
+        msg.textContent = '✓ Passwords match';
+        msg.className = 'field-msg success';
+      }
+    });
+
+    // Handle form submission
+    function handleSignup() {
+      const username        = document.getElementById('username').value.trim();
+      const email           = document.getElementById('email').value.trim();
+      const password        = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const resultMsg       = document.getElementById('result-msg');
+
+      // Validation
+      if (!username || !email || !password || !confirmPassword) {
+        resultMsg.textContent = 'Please fill in all fields';
+        resultMsg.className = 'result-msg error';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        resultMsg.textContent = 'Passwords do not match';
+        resultMsg.className = 'result-msg error';
+        return;
+      }
+
+      if (username.length < 3) {
+        resultMsg.textContent = 'Username must be at least 3 characters';
+        resultMsg.className = 'result-msg error';
+        return;
+      }
+
+      // Send to PHP
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('email', email);
+      formData.append('password', password);
+
+      fetch('insert_user.php', {
+      method: 'POST',
+      body: formData
+     })
+      .then(res => res.json())
+      .then(data => {
+          if (data.success) {
+              // Popup message
+              alert('Account created successfully! Welcome, ' + username + '!');
+              // Redirect to home page
+              window.location.href = 'gameManagerLogin.html';
+          } else {
+              resultMsg.textContent = data.error || 'Something went wrong';
+              resultMsg.className = 'result-msg error';
+          }
+      })
+      .catch(() => {
+          resultMsg.textContent = 'Could not connect to server';
+          resultMsg.className = 'result-msg error';
+      });
+    }
+  </script>
+
+</body>
+</html>
