@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit admins - TicTacToe Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="editachievements.css"/> 
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
+            <button class="nav-btn" onclick="window.location.href=''">✏️ Edit Admins</button>
+      <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
+      <button class="nav-btn" onclick="window.location.href='adminProfile.html'">👤 Profile</button>
+      <p class="signout-link">
+        <a href="logout.php">Sign Out</a>
+      </p>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="page-wrapper">
+      <h1 class="title">Edit Admins</h1>
+
+      <div class="layout-row">  
+
+        <!-- Left: Search Panel -->
+        <div class="search-panel">
+          <div class="form-group">
+            <label>Admin ID</label>
+            <input type="number" id="search-id" placeholder="Admin ID" min="0" oninput="filterTable()"/>
+          </div>
+          <button class="search-btn" onclick="filterTable()">
+            Search
+          </button>
+          <div>
+            <label>
+            <input type="checkbox" id="Projection-AdminID" onchange="loadProjection()">
+            AdminID
+          </label>
+            <label>
+            <input type="checkbox" id="Projection-Name" onchange="loadProjection()">
+            Name
+          </label>
+          <label>
+            <input type="checkbox" id="Projection-Email" onchange="loadProjection()">
+            Email
+          </label>
+        <label>
+            <input type="checkbox" id="Projection-Level" onchange="loadProjection()">
+            Level
+          </label>
+          </div>
+        </div>
+
+        <!-- Right: Results + Actions -->
+        <div class="results-panel">
+          <div class="results-box">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>AdminID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Level</th>
+                </tr>
+              </thead>
+              <tbody id="admins-tbody">
+                <tr><td colspan="3">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="action-row">
+            <button class="action-btn edit-btn" onclick="openEditSelected()">✏️ Edit Level</button>
+            <button class="action-btn delete-btn" onclick="openDeleteSelected()">🗑️ Delete Admin</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
+    <div class="modal-box">
+      <h2 class="modal-title">Edit Admin Level</h2>
+      <input type="hidden" id="edit-id"/>
+      <div class="form-group">
+        <label>Level</label>
+        <input type="number" id="edit-level" min="1" max="5" value="1"/>
+      </div>
+      <p class="result-msg" id="edit-msg"></p>
+      <div class="modal-buttons">
+        <button class="action-btn edit-btn" onclick="saveEdit()">Save Changes</button>
+        <button class="action-btn delete-btn" onclick="closeModal('edit-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Modal -->
+  <div id="delete-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
+    <div class="modal-box">
+      <h2 class="modal-title" style="color:#e83611;">Delete Admin</h2>
+      <p class="warning-msg">⚠️ Warning: Deleting this Admin will also delete all related records.</p>
+      <p class="delete-confirm-text">Are you sure you want to delete: <strong id="delete-name"></strong>?</p>
+      <input type="hidden" id="delete-id"/>
+      <p class="result-msg" id="delete-msg"></p>
+      <div class="modal-buttons">
+        <button class="action-btn delete-btn" onclick="confirmDelete()">Yes, Delete</button>
+        <button class="action-btn edit-btn" onclick="closeModal('delete-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div id="popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+    <div class="modal-box" style="text-align:center;">
+      <h2 class="modal-title" id="popup-title"></h2>
+      <p id="popup-message" style="font-family:'Nunito',sans-serif; color:#444;"></p>
+      <button class="action-btn add-btn" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    let alladmins = [];
+    let selectedID = null;
+
+    loadadmins();
+
+    function loadadmins() {
+      fetch('Admin_handler.php?action=all')
+        .then(res => res.json())
+        .then(data => {
+          alladmins = data;
+          renderTable(data);
+        });
+    }
+
+    function renderTable(data, fields = ["AdminID","Name","Email","Level"]) {
+      const tbody = document.getElementById('admins-tbody');
+      tbody.innerHTML = '';
+      selectedID = null;
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">No admins found</td></tr>';
+        return;
+      }
+
+      data.forEach(a => {
+        const row = document.createElement('tr');
+        row.setAttribute('data-id', a.AdminID);
+        row.innerHTML = fields.map(f => `<td>${a[f]}</td>`).join('');
+        row.addEventListener('click', () => selectRow(row, a.AdminID));
+        tbody.appendChild(row);
+  })
+    }
+
+    function selectRow(row, id) {
+      // Deselect all rows
+      document.querySelectorAll('.results-table tbody tr').forEach(r => {
+        r.classList.remove('selected');
+      });
+      // Select clicked row
+      row.classList.add('selected');
+      selectedID = id;
+    }
+
+    function filterTable() {
+
+      const idSearch    = document.getElementById('search-id').value;
+
+      const filtered = alladmins.filter(a => {
+        const matchID    = idSearch === '' || a.AdminID.toString() === idSearch;
+        return matchID;
+      });
+
+      renderTable(filtered);
+    }
+
+    // ── Edit ──
+    function openEditSelected() {
+      if (!selectedID) {
+        alert('Please select an admin from the list first.');
+        return;
+      }
+      const Admin = alladmins.find(a => a.AdminID == selectedID);
+      document.getElementById('edit-id').value    = Admin.AdminID;
+      document.getElementById('edit-level').value = Admin.Level;
+      document.getElementById('edit-msg').textContent = '';
+      document.getElementById('edit-modal').style.display = 'flex';
+    }
+
+    function saveEdit() {
+      const id    = document.getElementById('edit-id').value;
+      const level = document.getElementById('edit-level').value;
+      const msg   = document.getElementById('edit-msg');
+
+      const formData = new FormData();
+      formData.append('action', 'update');
+      formData.append('AdminID', id);
+      formData.append('Level', level);
+
+      fetch('Admin_handler.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            closeModal('edit-modal');
+            showPopup('✅ Updated!', 'Admin has been updated successfully.');
+            loadadmins();
+          } else {
+            msg.textContent = data.error || 'Failed to update';
+            msg.className = 'result-msg error';
+          }
+        });
+    }
+
+    // ── Delete ──
+    function openDeleteSelected() {
+      if (!selectedID) {
+        alert('Please select an admin from the list first.');
+        return;
+      }
+      const Admin = alladmins.find(a => a.AdminID == selectedID);
+      document.getElementById('delete-id').value = Admin.AdminID;
+      document.getElementById('delete-name').textContent = Admin.Name;
+      document.getElementById('delete-msg').textContent  = '';
+      document.getElementById('delete-modal').style.display = 'flex';
+    }
+
+    function confirmDelete() {
+      const id  = document.getElementById('delete-id').value;
+      const msg = document.getElementById('delete-msg');
+
+      const formData = new FormData();
+      formData.append('action', 'delete');
+      formData.append('AdminID', id);
+
+      fetch('Admin_handler.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            closeModal('delete-modal');
+            showPopup('🗑️ Deleted!', 'Admin and all related records have been deleted.');
+             if (data.selfDeleted) {
+                window.location.href = 'adminLogin.html';
+                return;
+            }
+            loadadmins();
+          } else {
+            msg.textContent = data.error || 'Failed to delete';
+            msg.className = 'result-msg error';
+          }
+        });
+    }
+
+    // ── Helpers ──
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function showPopup(title, message) {
+      document.getElementById('popup-title').textContent   = title;
+      document.getElementById('popup-message').textContent = message;
+      document.getElementById('popup').style.display = 'flex';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+
+    function loadProjection(){
+        const thead = document.querySelector('.results-table thead tr');
+        const showAdminID = document.getElementById("Projection-AdminID").checked;
+        const showName    = document.getElementById("Projection-Name").checked;
+        const showEmail   = document.getElementById("Projection-Email").checked;
+        const showLevel   = document.getElementById("Projection-Level").checked;
+        thead.innerHTML = '';
+        const fields = [];
+        if (showAdminID){
+            thead.innerHTML += '<th>AdminID</th>';
+            fields.push("AdminID");
+        }
+        if (showName){
+              thead.innerHTML += '<th>Name</th>';
+              fields.push("Name");
+        }
+        if (showEmail){
+               thead.innerHTML += '<th>Email</th>';
+               fields.push("Email");
+        }
+        if (showLevel){
+              thead.innerHTML += '<th>Level</th>';
+              fields.push("Level");
+        }
+        if(!showAdminID && !showName && !showEmail && !showLevel){
+            thead.innerHTML += `
+            <th>AdminID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Level</th>`;
+            fields.push("AdminID");
+            fields.push("Name")
+            fields.push("Email")
+            fields.push("Level")
+        }
+        const query = fields.join(",");
+        fetch(`Admin_handler.php?action=projection&fields=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                alladmins = data;
+                renderTable(data, fields);
+            });
+
+        }
+
+    // Close modal clicking outside
+    ['edit-modal', 'delete-modal', 'popup'].forEach(id => {
+      document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>

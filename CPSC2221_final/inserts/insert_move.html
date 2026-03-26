@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Insert Move - TicTacToe Platform</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+	<h1 class="mb-4">TicTacToe Platform - Insert Move</h1>
+	<div class="card" style="max-width: 500px;">
+		<div class="card-header bg-success text-white"><h5 class="mb-0">New Move Record</h5></div>
+		<div class="card-body">
+			<form action="insert_move.php" method="post">
+				<div class="mb-3">
+					<label class="form-label">Match ID <span class="text-muted">(must match an existing Match ID)</span></label>
+					<input type="text" name="MatchID" class="form-control" placeholder="e.g. 1">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Move Number</label>
+					<input type="text" name="Move_Number" class="form-control" placeholder="e.g. 6">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Position</label>
+					<select name="Position" class="form-control">
+						<option value="">-- Select Position --</option>
+						<option value="TopLeft">TopLeft</option>
+						<option value="TopMiddle">TopMiddle</option>
+						<option value="TopRight">TopRight</option>
+						<option value="MiddleLeft">MiddleLeft</option>
+						<option value="MiddleMiddle">MiddleMiddle</option>
+						<option value="MiddleRight">MiddleRight</option>
+						<option value="BottomLeft">BottomLeft</option>
+						<option value="BottomMiddle">BottomMiddle</option>
+						<option value="BottomRight">BottomRight</option>
+					</select>
+				</div>
+				<button type="submit" class="btn btn-success w-100">Insert Move</button>
+			</form>
+		</div>
+	</div>
+	<br><a href="../home.html" class="btn btn-secondary mt-2">Back to Main Menu</a>
+</div>
+</body>
+</html>

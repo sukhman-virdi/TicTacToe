@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Player Home - TicTacToe Game Organizer</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&family=Purple+Purse&display=swap" rel="stylesheet">
+    <style>
+        #achievementText{
+            font-size: 2.8vw;
+        }
+        #tournamentText{
+            font-size: 3.5vw;
+        }
+    </style>
+</head>
+<body>
+	<h1>You are a player!</h1>
+    <h2>What are you gonna do?</h2>
+    <div id="selections">
+        <div class="choice" onclick="play()">
+            <img src="../images/tic-tac-toe_934477.png" alt="" >
+            <h3>Play a Game</h3>
+        </div>
+        <div class="choice" onclick="join()">
+            <img src="../images/tournament_3069131.png" alt="" >
+            <h3 id="tournamentText">Join a Tournament</h3>
+        </div>
+        <div class="choice" onclick="see()">
+            <img src="../images/parchment_2682065.png" alt="">
+            <h3 id="achievementText">See Records and Achievements</h3>
+        </div>
+    </div>
+    <div id="aTag">
+        <a href="index.html">Back to Main Menu</a>
+    </div>
+    <script>
+        function play() {
+            window.location.href = "";
+        }
+
+         function join() {
+            window.location.href = "";
+        }
+
+        function see() {
+            window.location.href = "";
+        }
+    </script>
+</body>
+</html>

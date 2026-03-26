@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Projection Query - TicTacToe Platform</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+	<h1 class="mb-4">TicTacToe Platform - Projection Query</h1>
+	<div class="card" style="max-width: 500px;">
+		<div class="card-header bg-info text-white"><h5 class="mb-0">Select fields to display from GameUser</h5></div>
+		<div class="card-body">
+			<form action="projection.php" method="post">
+				<div class="mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="fields[]" value="UserID">
+						<label class="form-check-label">User ID</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="fields[]" value="Username">
+						<label class="form-check-label">Username</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="fields[]" value="Email">
+						<label class="form-check-label">Email</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="fields[]" value="Password">
+						<label class="form-check-label">Password</label>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-info text-white w-100">Run Projection Query</button>
+			</form>
+		</div>
+	</div>
+	<br><a href="../index.php" class="btn btn-secondary mt-2">Back to Main Menu</a>
+</div>
+</body>
+</html>

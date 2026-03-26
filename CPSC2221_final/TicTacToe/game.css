@@ -1,0 +1,140 @@
+/* ── Game Card ── */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 50px 80px;
+}
+
+/* ── Symbol Picker ── */
+.picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.picker-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7c7c7c;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.picker-btns {
+  display: flex;
+  gap: 20px;
+}
+
+.pick-btn {
+  width: 64px;
+  height: 64px;
+  border: 2px solid #d4d4d4;
+  border-radius: 12px;
+  background: transparent;
+  font-family: 'Righteous', cursive;
+  font-size: 1.6rem;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.35s;
+}
+
+.pick-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.pick-btn::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: #f1b211;
+  transition: width 0.35s;
+  border-radius: 10px;
+}
+
+.pick-btn:hover {
+  color: #fff;
+}
+
+.pick-btn:hover::after {
+  width: 100%;
+}
+
+.pick-btn.active {
+  border-color: #f1b211;
+  background: #f1b211;
+  color: #fff;
+}
+
+.pick-btn.active::after {
+  width: 100%;
+}
+
+/* ── Status ── */
+.status-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #555;
+  letter-spacing: 1px;
+  min-height: 1.6em;
+  text-align: center;
+}
+
+/* ── Board ── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 110px);
+  grid-template-rows: repeat(3, 110px);
+  gap: 10px;
+}
+
+.cell {
+  width: 110px;
+  height: 110px;
+  border: 2px solid #d4d4d4;
+  border-radius: 12px;
+  background: #fafafa;
+  font-family: 'Righteous', cursive;
+  font-size: 2.8rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell:not(:disabled):hover {
+  background: #fff8e1;
+  border-color: #f1b211;
+  transform: scale(1.04);
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell[data-val="X"] {
+  color: #186cb8;
+}
+
+.cell[data-val="O"] {
+  color: #e83611;
+}
+
+/* ── New Game button inherits .btn .btn-play from styles.css ── */
+.btn-play {
+  width: 280px;
+  padding: 18px 0;
+  font-size: 1.2rem;
+}

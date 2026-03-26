@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe - Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="profile.css"/>
+</head>
+<body>
+ 
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='game.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p class="signout-link">
+        <a href="logout.php">Sign Out</a>
+      </p>
+    </nav>
+  </div> 
+ 
+  <div class="main">
+    <div class="card">
+      <h1 class="title" id="username">Username</h1>
+      <p class="login-link">
+        <a href="editprofile.html">Edit Profile</a>
+      </p>    
+    <div class="boxes-row">
+    <div class="box">
+      <h3>Player Stats</h3>
+      <hr/>
+      <div class="box-table">
+          <div class="box-table-row">
+              <div class="box-table-cell" >Games Played</div>
+              <div class="box-table-cell" id="totalgames">...</div>
+          </div>
+          <div class="box-table-row">
+              <div class="box-table-cell">Wins</div>
+              <div class="box-table-cell" id="wins">...</div>
+          </div>
+          <div class="box-table-row">
+              <div class="box-table-cell" >Losses</div>
+              <div class="box-table-cell" id="losses">...</div>
+          </div>
+          <div class="box-table-row">
+              <div class="box-table-cell">Draws</div>
+              <div class="box-table-cell" id="draws">...</div>
+          </div>
+
+          <div class="box-table-row">
+              <div class="box-table-cell">Points</div>
+              <div class="box-table-cell" id="ranking">...</div>
+          </div>
+      </div>
+    </div> 
+  <div class="box">
+    <h3>Recent Games</h3>
+    <hr/>
+    <table class="box-table">
+      <thead>
+        <tr>
+          <th>Opponent</th>
+          <th>Result</th>
+          <th>Date</th>
+        </tr>    
+      </thead>
+      <tbody id ="games-tbody">   
+        <!-- Fill in table with games data collected from database -->
+      </tbody>
+    </table>
+  </div>
+  <div class="box-large">
+    <h3>Achievements</h3>
+    <hr/>
+    <table class="box-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody id="achievements-tbody">
+        <!--Fill table with achievements data from database-->
+      </tbody>
+    </table>
+  </div>
+  </div>  
+ 
+    
+
+
+    </div>  
+  </main>
+  <div id="login-popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
+  <div style="background:#fff; border-radius:16px; padding:40px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:16px; min-width:300px;">
+    <h2 style="font-family:'Righteous',cursive; color:#f1b211; font-size:1.5rem;">🔒 Login Required</h2>
+    <p style="font-family:'Nunito',sans-serif; color:#444;">Please log in to view your profile.</p>
+    <p style="font-family:'Nunito',sans-serif; color:#888; font-size:0.9rem;">Redirecting to login page...</p>
+  </div>
+  </div>
+  
+  <script>
+  // Check if user is logged in first
+  fetch('get_session.php')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+      // Show popup then redirect
+      document.getElementById('login-popup').style.display = 'flex';
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1500);
+      }  else {
+        // Logged in, load their profile
+        const playerId = data.userID;
+
+        // Fetch player profile
+        fetch(`get_player.php?id=${playerId}`)
+          .then(res => res.json())
+          .then(player => {
+            document.getElementById('username').textContent = player.Username;
+            document.getElementById('wins').textContent = player.TotalWins;
+            document.getElementById('losses').textContent = player.TotalLosses;
+            document.getElementById('draws').textContent = player.TotalDraws;
+            document.getElementById('ranking').textContent = player.RankingPoints;
+            document.getElementById('totalgames').textContent = player.TotalDraws+player.TotalLosses+player.TotalWins;
+          })
+          .catch(err => console.log('Error loading profile:', err));
+
+        // Fetch recent matches
+        fetch(`get_games.php?id=${playerId}`)
+          .then(res => res.json())
+          .then(games => {
+            const tbody = document.getElementById('games-tbody');
+            tbody.innerHTML = '';
+            if (games.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4">No games yet</td></tr>';
+              return;
+            }
+            games.forEach(game => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${game.Opponent}</td>
+                <td>${game.Result}</td>
+                <td>${game.Match_Date}</td>
+              `;
+              tbody.appendChild(row);
+            });
+          })
+          .catch(err => console.log('Error loading games:', err));
+
+        //Fetch achievements
+        fetch(`get_achievements.php?id=${playerId}`)
+          .then(res => res.json())
+          .then(achievements => {
+            const tbody = document.getElementById('achievements-tbody');
+            tbody.innerHTML = '';
+            if (achievements.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="2">No achievements yet</td></tr>';
+              return;
+            }
+            achievements.forEach(a => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${a.Title}</td>
+                <td>${a.Description}</td>
+              `;
+              tbody.appendChild(row);
+            });
+          })
+          .catch(err => console.log('Error loading achievements:', err));
+      }
+    });
+  </script>
+
+
+</body> 
+</html>  
+
+

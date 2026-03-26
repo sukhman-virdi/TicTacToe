@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="login.css"/> 
+</head>
+<body>  
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='game.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+    </nav> 
+  </div>   
+
+  <main class="main">
+    <div class="card">
+      <h1 class="title">Game Manager Login</h1>
+
+      <div class="form-group">
+        <label for="login">Username or Email</label>
+        <input type="text" id="login" placeholder="Enter username or email"/>
+        <span class="field-msg" id="login-msg"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password"/>
+        <span class="field-msg" id="password-msg"></span>
+      </div>
+
+      <button class="btn btn-secondary" onclick="handleLogin()">
+        <span>Login</span>
+      </button>
+
+      <p class="result-msg" id="result-msg"></p>
+       <p class="login-link">*Players can use the same account to log-in as a game manager
+      </p>
+      <p class="login-link">Don't have an account?
+        <a href="createmanageraccount.html">Sign Up</a> 
+      </p>
+      <p class="login-link">
+        <a href="login.html">Game User Login</a>
+      </p>
+    </div>
+    <!-- Success Popup -->
+    <div class="popup" id="popup">
+      <div class="popup-box">
+        <h2>👋 Welcome Back!</h2>
+        <p>Logged in as <span id="popup-username"></span></p>
+        <p>Redirecting to home page...</p>
+      </div>
+    </div>
+  </main> 
+
+
+  <script>
+    function handleLogin() {
+      const login     = document.getElementById('login').value.trim();
+      const password  = document.getElementById('password').value.trim();
+      const resultMsg = document.getElementById('result-msg');
+
+      // Highlight empty fields
+      const fields = ['login', 'password'];
+      fields.forEach(id => {
+        const input = document.getElementById(id);
+        if (!input.value.trim()) {
+          input.style.borderColor = 'red';
+        } else {
+          input.style.borderColor = '#ddd';
+        }
+      });
+
+      // Validation
+      if (!login || !password) {
+        resultMsg.textContent = 'Please fill in all fields';
+        resultMsg.className = 'result-msg error';
+        return;
+      }
+
+      // Send to PHP
+      const formData = new FormData();
+      formData.append('login', login);
+      formData.append('password', password);
+
+      fetch('login.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Show popup
+            document.getElementById('popup-username').textContent = data.username;
+            document.getElementById('popup').classList.add('show');
+            // Redirect after 2 seconds
+            setTimeout(() => {
+              window.location.href = `profile.html?id=${data.userID}`;
+            }, 2000);
+          } else {
+            resultMsg.textContent = data.error || 'Invalid username or password';
+            resultMsg.className = 'result-msg error';
+          }
+        })
+        .catch(() => {
+          resultMsg.textContent = 'Could not connect to server';
+          resultMsg.className = 'result-msg error';
+        });
+    }
+
+    // Clear red border when user starts typing
+    document.getElementById('login').addEventListener('input', function() {
+      this.style.borderColor = '#ddd';
+      document.getElementById('result-msg').textContent = '';
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+      this.style.borderColor = '#ddd';
+      document.getElementById('result-msg').textContent = '';
+    });
+
+    // Allow pressing Enter to submit
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+
+</body>
+</html> 

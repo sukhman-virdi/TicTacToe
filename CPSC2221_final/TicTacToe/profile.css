@@ -1,0 +1,231 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --amber: #f1b211;
+  --amber-hover: #f1b211;
+  --sidebar-bg: #f0f0f0;
+  --btn-bg: #d4d4d4;
+  --btn-hover: #c2c2c2;
+  --btn-text: #f0f0f0;
+  --bg: #ffffff;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  /* overflow: hidden; */
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    padding: 10px 0 0 0;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 190px;
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  flex-shrink: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+} 
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  padding-top: 100px;
+  gap: 0;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 12px;
+  background: transparent;
+  border: none;
+  border-bottom-style: solid;
+  border-top-style: solid;
+  border-width: 1px;
+  color: #7c7c7c;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  border-left: 3px solid var(--amber);
+  padding-left: 9px;
+}
+
+.signout-link {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+}
+
+.signout-link a {
+  color: var(--amber);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.signout-link a:hover {
+  text-decoration: underline;
+}
+
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  margin-left:190px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  max-width: 100%;
+}
+
+.card {
+  display: flex;
+  width:100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 36px;
+  padding: 60px 80px;
+}
+
+/* ── Title ── */
+.title {
+  font-family: 'Righteous', cursive;
+  font-size: 6rem;
+  font-weight: 1200;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ── Boxes ── */
+.boxes-row {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 100%;        /* take full available width */
+  flex-wrap: wrap;    /* wrap to next line if not enough space */
+}
+
+.box {
+  width: 48%;
+  height: 300px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.box-large {
+  width: 90%;
+  height: 300px;
+  background: #fff;
+  border-radius: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.box-large h3 {
+  font-family: 'Righteous', cursive;
+  color: var(--amber);
+  margin-bottom: 2px;
+}
+
+.box-large p {
+  font-family: 'Nunito', sans-serif;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.box h3 {
+  font-family: 'Righteous', cursive;
+  color: var(--amber);
+  margin-bottom: 2px;
+}
+
+.box p {
+  font-family: 'Nunito', sans-serif;
+  color: #555;
+  font-size: 0.95rem;
+}
+.box-table { 
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+}
+
+
+.box-table th {
+  text-align: left;
+  padding: 8px 10px;
+  color: #000000;
+  font-weight: 700;
+  border-bottom: 3px solid #eee;
+}
+
+
+.box-table td {
+  padding: 8px 10px;
+  color: #444;
+  border-bottom: 1px solid #eee;
+}
+
+.box-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.login-link {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+}
+
+.login-link a {
+  color: var(--amber);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+
+/*Resources:
+    Button animation: thelaazyguy - https://dev.to/webdeasy/top-20-css-buttons-animations-f41
+    Title text effect: Shireen Taj - https://font-tester.foxcraft.tech/text-effects
+
+
+
+
+*/

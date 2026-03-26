@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe – Play</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="game.css"/>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn active" onclick="window.location.href='game.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p class="signout-link">
+        <a href="logout.php">Sign Out</a>
+      </p>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="game-card">
+
+      <!-- Symbol Picker -->
+
+      <div class="picker" id="picker">
+
+        <div id="login-warning" style="display:none; color:red; margin-bottom:10px;">
+            ⚠️ You must be logged in to save your game.
+        </div>
+        <p class="picker-label">Play as:</p>
+        <div class="picker-btns">
+          <button class="pick-btn active" id="pick-x" onclick="selectSymbol('X')"><span>X</span></button>
+          <button class="pick-btn" id="pick-o" onclick="selectSymbol('O')"><span>O</span></button>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div id="status" class="status-text">Your turn (X)</div>
+
+      <!-- Board -->
+      <div id="board" class="board">
+        <button class="cell" data-index="0" onclick="handleCellClick(0)"></button>
+        <button class="cell" data-index="1" onclick="handleCellClick(1)"></button>
+        <button class="cell" data-index="2" onclick="handleCellClick(2)"></button>
+        <button class="cell" data-index="3" onclick="handleCellClick(3)"></button>
+        <button class="cell" data-index="4" onclick="handleCellClick(4)"></button>
+        <button class="cell" data-index="5" onclick="handleCellClick(5)"></button>
+        <button class="cell" data-index="6" onclick="handleCellClick(6)"></button>
+        <button class="cell" data-index="7" onclick="handleCellClick(7)"></button>
+        <button class="cell" data-index="8" onclick="handleCellClick(8)"></button>
+      </div>
+
+      <!-- New Game Button -->
+      <button class="btn btn-play" onclick="resetBoard()"><span>New Game</span></button>
+
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+
+</body>
+</html>

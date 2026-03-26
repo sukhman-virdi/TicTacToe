@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="profile.css"/>
+</head>
+<body>
+ 
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
+      <button class="nav-btn" onclick="window.location.href='editAdmin.html'">✏️ Edit Admins</button>
+      <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
+      <button class="nav-btn" onclick="window.location.href=''">👤 Profile</button>
+      <p class="signout-link">
+        <a href="logout.php">Sign Out</a>
+      </p>
+    </nav>
+  </div> 
+ 
+  <main class="main">
+    <div class="card">
+      <h1 class="title" id="username">Username</h1>
+      <p class="login-link">
+        <a href="editprofile.html">Edit Profile</a>
+      </p>    
+    <div class="boxes-row">
+  <div class="box">
+    <h3>Admin Information</h3>
+    <hr/>
+    <div class="box-table">
+        <div class="box-table-row">
+            <div class="box-table-cell" >AdminID:</div>
+            <div class="box-table-cell" id="adminID">...</div>
+        </div>
+        <div class="box-table-row">
+            <div class="box-table-cell">Name:</div>
+            <div class="box-table-cell" id="name">...</div>
+        </div>
+        <div class="box-table-row">
+            <div class="box-table-cell" >Email:</div>
+            <div class="box-table-cell" id="email">...</div>
+        </div>
+        <div class="box-table-row">
+            <div class="box-table-cell">Level:</div>
+            <div class="box-table-cell" id="level">...</div>
+        </div>
+    </div>
+  </div> 
+  <div class="box">
+    <h3>Supervise Tournaments</h3>
+    <hr/>
+    <table class="box-table">
+      <thead>
+        <tr>
+          <th>TournamentID</th>
+          <th>Name</th>
+          <th>ManagerID</th>
+        </tr>    
+      </thead>
+      <tbody id ="supervise-tbody">   
+        <!-- Fill in table with supervise data collected from database -->
+      </tbody>
+    </table>
+  </div>
+</div>  
+ 
+    
+
+
+    </div>  
+  </main>
+  <div id="login-popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
+  <div style="background:#fff; border-radius:16px; padding:40px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:16px; min-width:300px;">
+    <h2 style="font-family:'Righteous',cursive; color:#f1b211; font-size:1.5rem;">🔒 Login Required</h2>
+    <p style="font-family:'Nunito',sans-serif; color:#444;">Please log in to view your profile.</p>
+    <p style="font-family:'Nunito',sans-serif; color:#888; font-size:0.9rem;">Redirecting to login page...</p>
+  </div>
+</div>
+  
+  <script>
+  // Check if user is logged in first
+  fetch('get_adminSession.php')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.loggedIn) {
+      // Show popup then redirect
+      document.getElementById('login-popup').style.display = 'flex';
+      setTimeout(() => {
+        window.location.href = 'adminLogin.html';
+      }, 2000);
+      }  else {
+        // Logged in, load their profile
+        const adminID = data.adminID;
+
+        // Fetch admin profile
+        fetch(`get_admin.php?id=${adminID}`)
+          .then(res => res.json())
+          .then(admin => {
+            console.log(admin);
+            document.getElementById('username').textContent = data.name;
+            document.getElementById('adminID').textContent = admin.AdminID;
+            document.getElementById('name').textContent = admin.Name;
+            document.getElementById('email').textContent = admin.Email;
+            document.getElementById('level').textContent = admin.Level;
+          })
+          .catch(err => console.log('Error loading profile:', err));
+
+        // Fetch recent matches
+        fetch(`get_supervise.php?id=${adminID}`)
+          .then(res => res.json())
+          .then(supervise => {
+            console.log(supervise)
+            const tbody = document.getElementById('supervise-tbody');
+            tbody.innerHTML = '';
+            if (supervise.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4">No supervise yet</td></tr>';
+              return;
+            }
+            supervise.forEach(tournament => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${tournament.TournamentID}</td>
+                <td>${tournament.Name}</td>
+                <td>${tournament.ManagerID}</td>
+              `;
+              tbody.appendChild(row);
+            });
+          })
+          .catch(err => console.log('Error loading supervise:', err));
+      }
+    });
+</script>
+
+
+</body> 
+</html>  
+
+

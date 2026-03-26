@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 40px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+#picker {
+  margin-bottom: 16px;
+}
+
+#picker button {
+  margin: 0 6px;
+  padding: 8px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#status {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+#board {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  font-size: 40px;
+  cursor: pointer;
+  border: 2px solid #333;
+  background: #fff;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+#restart {
+  padding: 8px 24px;
+  font-size: 16px;
+  cursor: pointer;
+}

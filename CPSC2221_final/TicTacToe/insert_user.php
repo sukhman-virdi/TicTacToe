@@ -1,0 +1,54 @@
+<?php
+ob_start();
+session_start();
+include 'db.php';
+ob_clean();
+header('Content-Type: application/json');
+
+$username        = $_POST['username'] ?? '';
+$email           = $_POST['email'] ?? '';
+$password        = $_POST['password'] ?? '';
+
+// Basic validation
+if (empty($username) || empty($email) || empty($password)) {
+    echo json_encode(['error' => 'All fields are required']);
+    exit;
+}
+
+// Check if username or email already exists
+$check = mysqli_prepare($conn, "SELECT UserID FROM GameUser WHERE Username = ? OR Email = ?");
+mysqli_stmt_bind_param($check, 'ss', $username, $email);
+mysqli_stmt_execute($check);
+mysqli_stmt_store_result($check);
+
+if (mysqli_stmt_num_rows($check) > 0) {
+    echo json_encode(['error' => 'Username or email already taken']);
+    exit;
+}
+
+// Get next available UserID
+$result = mysqli_query($conn, "SELECT MAX(UserID) AS maxID FROM GameUser");
+$row    = mysqli_fetch_assoc($result);
+$newID  = ($row['maxID'] ?? 0) + 1;
+
+// Insert into GameUser
+$stmt = mysqli_prepare($conn,
+    "INSERT INTO GameUser (UserID, Username, Email, Password) VALUES (?, ?, ?, ?)"
+);
+mysqli_stmt_bind_param($stmt, 'isss', $newID, $username, $email, $password);
+
+if (mysqli_stmt_execute($stmt)) {
+    // Insert into Player with 300 starting points
+    $playerStmt = mysqli_prepare($conn,
+        "INSERT INTO Player (PlayerID, RankingPoints) VALUES (?, 300)"
+    );
+    mysqli_stmt_bind_param($playerStmt, 'i', $newID);
+    mysqli_stmt_execute($playerStmt);
+
+    echo json_encode(['success' => true, 'userID' => $newID]);
+} else {
+    echo json_encode(['error' => 'Failed to create account: ' . mysqli_error($conn)]);
+}
+
+mysqli_close($conn);
+?>

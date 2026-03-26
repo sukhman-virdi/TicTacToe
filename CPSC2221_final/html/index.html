@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>TicTacToe Game Organizer</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&family=Purple+Purse&display=swap" rel="stylesheet">
+</head>
+<body>
+	<h1>TicTacToe Game Organizer</h1>
+    <h2>Select a role</h2>
+    <div id="selections">
+        <div class="choice" onclick="goToPlayer()">
+            <img src="../images/tic-tac-toe_934477.png" alt="" >
+            <h3>Player</h3>
+        </div>
+        <div class="choice" onclick="goToManager()">
+            <img src="../images/presentation_5656735.png" alt="">
+            <h3>Game Manager</h3>
+        </div>
+        <div class="choice" onclick="goToAdmin()">
+            <img src="../images/hr_1481457.png" alt="">
+            <h3>Admin</h3>
+        </div>
+    </div>
+    <script>
+        function goToPlayer() {
+            const role = "role=player";
+            fetch("checkRole.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: role
+            })
+            .then(() => {
+                window.location.href = "signIn.html";
+            });
+        }
+        function goToManager() {
+            const role = "role=manager";
+            fetch("checkRole.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: role
+            })
+            .then(() => {
+                window.location.href = "signIn.html";
+            });
+        }
+        function goToAdmin() {
+            window.location.href = "adminSignIn.html";
+        }
+    </script>
+</body>
+</html>
