@@ -82,11 +82,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (mysqli_stmt_execute($stmt)) {
             // Log the edit
-            $log = mysqli_prepare($conn,
-                "INSERT INTO Edits (AdminID, AchievementID, EditDate) VALUES (?, ?, CURRENT_DATE)"
+            $checkLog = mysqli_prepare($conn,
+                "SELECT * FROM Edits WHERE AdminID = ? AND AchievementID = ?"
             );
-            mysqli_stmt_bind_param($log, 'ii', $adminID, $id);
-            mysqli_stmt_execute($log);
+            mysqli_stmt_bind_param($checkLog, 'ii', $adminID, $id);
+            mysqli_stmt_execute($checkLog);
+            mysqli_stmt_store_result($checkLog);
+
+            if (mysqli_stmt_num_rows($checkLog) > 0) {
+                // UPDATE
+                $updateLog = mysqli_prepare($conn,
+                    "UPDATE Edits SET EditDate = CURRENT_DATE WHERE AdminID = ? AND AchievementID = ?"
+                );
+                mysqli_stmt_bind_param($updateLog, 'ii', $adminID, $id);
+                mysqli_stmt_execute($updateLog);
+            } else {
+                // INSERT
+                $insertLog = mysqli_prepare($conn,
+                    "INSERT INTO Edits (AdminID, AchievementID, EditDate) VALUES (?, ?, CURRENT_DATE)"
+                );
+                mysqli_stmt_bind_param($insertLog, 'ii', $adminID, $id);
+                mysqli_stmt_execute($insertLog);
+            }
 
             echo json_encode(['success' => true]);
         } else {
@@ -131,12 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         mysqli_stmt_bind_param($stmt, 'iss', $id, $title, $desc);
 
         if (mysqli_stmt_execute($stmt)) {
-            // Log the edit
-            $log = mysqli_prepare($conn,
-                "INSERT INTO Edits (AdminID, AchievementID, EditDate) VALUES (?, ?, CURRENT_DATE)"
-            );
-            mysqli_stmt_bind_param($log, 'ii', $adminID, $id);
-            mysqli_stmt_execute($log);
 
             echo json_encode(['success' => true]);
         } else {
