@@ -93,8 +93,10 @@ CREATE TABLE Tournament_Managed (
         ON DELETE SET NULL
         ON UPDATE CASCADE,
     FOREIGN KEY (SupervisorID) REFERENCES Admin(AdminID)
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (ManagerID) REFERENCES TournamentManager(ManagerID)
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 );
  
@@ -108,6 +110,7 @@ CREATE TABLE Match_Contained (
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (Winner_ID) REFERENCES Player(PlayerID)
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 );
  
@@ -152,6 +155,7 @@ CREATE TABLE Edits (
     EditDate DATE DEFAULT (CURRENT_DATE),
     PRIMARY KEY (AdminID, AchievementID),
     FOREIGN KEY (AdminID) REFERENCES Admin(AdminID)
+        ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (AchievementID) REFERENCES Achievement(AchievementID)
         ON DELETE CASCADE
