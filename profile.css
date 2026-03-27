@@ -167,6 +167,23 @@ hr {
 .login-link a:hover {
   text-decoration: underline;
 }
+#achievements-tbody tr,
+#achievements-tbody + thead tr,
+.box-large .box-table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.box-large .box-table th:first-child,
+.box-large .box-table td:first-child {
+  width: 40%;
+}
+
+.box-large .box-table th:last-child,
+.box-large .box-table td:last-child {
+  width: 60%;
+}
 
 
 /*Resources:
