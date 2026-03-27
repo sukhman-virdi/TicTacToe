@@ -7,6 +7,10 @@
   padding: 50px 80px;
 }
 
+.main{
+  margin-left:190px;
+}
+
 /* ── Symbol Picker ── */
 .picker {
   display: flex;
