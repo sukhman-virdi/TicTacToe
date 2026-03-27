@@ -269,6 +269,7 @@ body {
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
   text-align: center;
+  align-self: center;
   min-height: 20px;
 }
 
