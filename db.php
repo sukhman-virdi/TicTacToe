@@ -4,22 +4,20 @@ $host = 'localhost';
 $user = 'root';
 $db   = 'tictactoe';
 
-//List of possible passwords
-$passwords = ['', 'root'];
+$password = 'root';
 
-//test each password and break loop if the connection is successful
-foreach ($passwords as $pass) {
-    $conn = mysqli_connect($host, $user, $pass, $db);
-
-    if ($conn) {
-        break;
-    }
-}
+$conn = mysqli_connect($host, $user, $password, $db);
 
 if (!$conn) {
-    die(json_encode([
-        'error' => 'Connection failed: ' . mysqli_connect_error()
-    ]));
+
+    $conn = mysqli_connect($host, $user, "", $db);
+    
+    if (!$conn) {
+
+        die(json_encode([
+            'error' => 'Connection failed: ' . mysqli_connect_error()
+        ]));
+    }
 }
 
 ?>
