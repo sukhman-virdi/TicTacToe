@@ -103,7 +103,7 @@
             }
             document.getElementById('popup-username').textContent = data.username;
             document.getElementById('popup').classList.add('show');
-            setTimeout(() => window.location.href = 'home.html', 2000);
+            setTimeout(() => window.location.href = 'managerHome.html', 2000);
           } else {
             resultMsg.textContent = data.error || 'Invalid username or password';
             resultMsg.className = 'result-msg error';

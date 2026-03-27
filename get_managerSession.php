@@ -15,7 +15,7 @@ if (isset($_SESSION['userID'])) {
     $r2 = mysqli_query($conn, "SELECT 1 FROM TournamentManager WHERE ManagerID = $id");
     $isManager = mysqli_num_rows($r2) > 0;
 
-    if($isPlayer){
+    if($isManager){
          echo json_encode([
             'loggedIn'  => true,
             'userID'    => $_SESSION['userID'],

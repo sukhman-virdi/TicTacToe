@@ -15,15 +15,14 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
-        <a href="adminHome.html">
+        <a href="managerHome.html">
           <img src="assets/tttLogo.png" alt="logo" class="logo">
         </a>
       </div> 
-      <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
-      <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
-      <button class="nav-btn" onclick="window.location.href='editAdmin.html'">✏️ Edit Admins</button>
-      <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
-      <button class="nav-btn" onclick="window.location.href='adminProfile.html'">👤 Profile</button>
+      <button class="nav-btn" onclick="window.location.href='managerHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='create_tournament.html'">🏆 Create Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href=''">✏️ Edit Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href='managerProfile.html'">👤 Profile</button>
       <p id="greeting"></p>
       <p class="signout-link" id="signout">
         <a href="logout.php">Sign Out</a>
@@ -39,12 +38,12 @@
       </p>    
     <div class="boxes-row">
   <div class="box">
-    <h3>Admin Information</h3>
+    <h3>Game Manager Information</h3>
     <hr/>
     <div class="box-table">
         <div class="box-table-row">
-            <div class="box-table-cell" >AdminID:</div>
-            <div class="box-table-cell" id="adminID">...</div>
+            <div class="box-table-cell" >GameManagerID:</div>
+            <div class="box-table-cell" id="GameManagerID">...</div>
         </div>
         <div class="box-table-row">
             <div class="box-table-cell">Name:</div>
@@ -55,24 +54,23 @@
             <div class="box-table-cell" id="email">...</div>
         </div>
         <div class="box-table-row">
-            <div class="box-table-cell">Level:</div>
-            <div class="box-table-cell" id="level">...</div>
+            <div class="box-table-cell">Tournaments_Organized:</div>
+            <div class="box-table-cell" id="Tournaments_Organized">...</div>
         </div>
     </div>
   </div> 
   <div class="box">
-    <h3>Supervise Tournaments</h3>
+    <h3>Achievements</h3>
     <hr/>
     <table class="box-table">
       <thead>
         <tr>
-          <th>TournamentID</th>
-          <th>Name</th>
-          <th>ManagerID</th>
-        </tr>    
+          <th>Title</th>
+          <th>Description</th>
+        </tr>
       </thead>
-      <tbody id ="supervise-tbody">   
-        <!-- Fill in table with supervise data collected from database -->
+      <tbody id="achievements-tbody">
+        <!--Fill table with achievements data from database-->
       </tbody>
     </table>
   </div>
@@ -93,66 +91,63 @@
   
   <script>
   // Check if user is logged in first
-  fetch('get_adminSession.php')
+  fetch('get_managerSession.php')
     .then(res => res.json())
     .then(data => {
       if (!data.loggedIn) {
       // Show popup then redirect
       document.getElementById('login-popup').style.display = 'flex';
       setTimeout(() => {
-        window.location.href = 'adminLogin.html';
+        window.location.href = 'gameManagerLogin.html';
       }, 2000);
       }  else {
         // Logged in, load their profile
-        const adminID = data.adminID;
+        const GameManagerID = data.userID;
 
-        // Fetch admin profile
-        fetch(`get_admin.php?id=${adminID}`)
+        // Fetch manager profile
+        fetch(`get_manager.php?id=${GameManagerID}`)
           .then(res => res.json())
-          .then(admin => {
-            console.log(admin);
-            document.getElementById('username').textContent = data.name;
-            document.getElementById('adminID').textContent = admin.AdminID;
-            document.getElementById('name').textContent = admin.Name;
-            document.getElementById('email').textContent = admin.Email;
-            document.getElementById('level').textContent = admin.Level;
+          .then(manager => {
+            console.log(manager);
+            document.getElementById('username').textContent = data.username;
+            document.getElementById('GameManagerID').textContent = manager.ManagerID;
+            document.getElementById('name').textContent = manager.Username;
+            document.getElementById('email').textContent = manager.Email;
+            document.getElementById('Tournaments_Organized').textContent = manager.Tournaments_Organized;
           })
           .catch(err => console.log('Error loading profile:', err));
-
-        // Fetch recent matches
-        fetch(`get_supervise.php?id=${adminID}`)
-          .then(res => res.json())
-          .then(supervise => {
-            console.log(supervise)
-            const tbody = document.getElementById('supervise-tbody');
-            tbody.innerHTML = '';
-            if (supervise.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="4">No supervise yet</td></tr>';
-              return;
-            }
-            supervise.forEach(tournament => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${tournament.TournamentID}</td>
-                <td>${tournament.Name}</td>
-                <td>${tournament.ManagerID}</td>
-              `;
-              tbody.appendChild(row);
-            });
-          })
-          .catch(err => console.log('Error loading supervise:', err));
       }
     });
+    //Fetch achievements
+    fetch(`get_achievements.php?id=${GameManagerID}`)
+      .then(res => res.json())
+      .then(achievements => {
+        const tbody = document.getElementById('achievements-tbody');
+        tbody.innerHTML = '';
+        if (achievements.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="2">No achievements yet</td></tr>';
+          return;
+        }
+        achievements.forEach(a => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${a.Title}</td>
+            <td>${a.Description}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => console.log('Error loading achievements:', err));
 
     //Load greeting message
-    fetch('get_adminSession.php')
+    fetch('get_managerSession.php')
       .then(res => res.json())
       .then(data => {
         const greeting = document.getElementById('greeting');
         const signout = document.getElementById('signout');
 
         if (data.loggedIn) {
-          greeting.textContent = `Hello, ${data.name}`;
+          greeting.textContent = `Hello, ${data.username}`;
           signout.style.display = 'block'; 
         } else {
           greeting.textContent = ''; // or "Hello, Guest"

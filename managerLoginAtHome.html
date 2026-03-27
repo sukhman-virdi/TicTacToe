@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Tic Tac Toe</title>
+  <title>Manager Login - Tic Tac Toe</title>
   <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
@@ -14,14 +14,15 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
-        <a href="home.html">
+        <a href="managerHome.html">
           <img src="assets/tttLogo.png" alt="logo" class="logo">
         </a>
       </div> 
-      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
-      <button class="nav-btn" onclick="window.location.href='play.html'">🎮 Play</button>
-      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
-      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <button class="nav-btn" onclick="window.location.href='managerHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='create_tournament.html'">🏆 Create Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href=''">✏️ Edit Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href='managerProfile.html'">👤 Profile</button>
+      <p id="greeting"></p>
       <p class="signout-link" id="signout">
         <a href="logout.php">Sign Out</a>
       </p>
@@ -30,7 +31,7 @@
 
   <main class="main">
     <div class="card">
-      <h1 class="title">Game Manager Login</h1>
+      <h1 class="title">Change Manager</h1>
 
       <div class="form-group">
         <label for="login">Username or Email</label>
@@ -50,6 +51,7 @@
 
       <p class="result-msg" id="result-msg"></p>
     </div>
+
     <!-- Success Popup -->
     <div class="popup" id="popup">
       <div class="popup-box">
@@ -60,50 +62,41 @@
     </div>
   </main> 
 
-
   <script>
     function handleLogin() {
       const login     = document.getElementById('login').value.trim();
       const password  = document.getElementById('password').value.trim();
       const resultMsg = document.getElementById('result-msg');
 
-      // Highlight empty fields
-      const fields = ['login', 'password'];
-      fields.forEach(id => {
-        const input = document.getElementById(id);
-        if (!input.value.trim()) {
-          input.style.borderColor = 'red';
-        } else {
-          input.style.borderColor = '#ddd';
-        }
+      ['login', 'password'].forEach(id => {
+        document.getElementById(id).style.borderColor = document.getElementById(id).value.trim() ? '#ddd' : 'red';
       });
 
-      // Validation
       if (!login || !password) {
         resultMsg.textContent = 'Please fill in all fields';
         resultMsg.className = 'result-msg error';
         return;
       }
 
-      // Send to PHP
       const formData = new FormData();
-      formData.append('login', login);
+      formData.append('login',    login);
       formData.append('password', password);
 
-      fetch('login.php', {
-        method: 'POST',
-        body: formData
-      })
+      fetch('login.php', { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            // Show popup
+            // Check if this user is actually a manager
+            if (!data.isManager) {
+              resultMsg.textContent = 'This account does not have Manager privileges. Upgrade your account or use Player login.';
+              resultMsg.className = 'result-msg error';
+              // Log them back out
+              fetch('logout.php');
+              return;
+            }
             document.getElementById('popup-username').textContent = data.username;
             document.getElementById('popup').classList.add('show');
-            // Redirect after 2 seconds
-            setTimeout(() => {
-              window.location.href = `profile.html?id=${data.userID}`;
-            }, 2000);
+            setTimeout(() => window.location.href = 'managerHome.html', 2000);
           } else {
             resultMsg.textContent = data.error || 'Invalid username or password';
             resultMsg.className = 'result-msg error';
@@ -115,39 +108,25 @@
         });
     }
 
-    fetch('get_session.php')
+    document.getElementById('login').addEventListener('input', function () {
+      this.style.borderColor = '#ddd';
+      document.getElementById('result-msg').textContent = '';
+    });
+
+    document.getElementById('password').addEventListener('input', function () {
+      this.style.borderColor = '#ddd';
+      document.getElementById('result-msg').textContent = '';
+    });
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+    fetch('get_managerSession.php')
       .then(res => res.json())
       .then(data => {
-        const greeting = document.getElementById('greeting');
-        const signout = document.getElementById('signout');
-
-        if (data.loggedIn) {
-          greeting.textContent = `Hello, ${data.username}`;
-          signout.style.display = 'block'; 
-        } else {
-          greeting.textContent = ''; // or "Hello, Guest"
-          signout.style.display = 'none';
-        }
-      })
-      .catch(err => console.error(err));
-
-
-    // Clear red border when user starts typing
-    document.getElementById('login').addEventListener('input', function() {
-      this.style.borderColor = '#ddd';
-      document.getElementById('result-msg').textContent = '';
-    });
-
-    document.getElementById('password').addEventListener('input', function() {
-      this.style.borderColor = '#ddd';
-      document.getElementById('result-msg').textContent = '';
-    });
-
-    // Allow pressing Enter to submit
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') handleLogin();
-    });
+        document.getElementById('greeting').textContent = data.loggedIn ? `Hello, ${data.username}` : '';
+        document.getElementById('signout').style.display = data.loggedIn ? 'block' : 'none';
+      });
   </script>
 
 </body>
-</html> 
+</html>

@@ -7,6 +7,7 @@
   <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="home.css"/>
   <style>
     .page-card {
       display: flex;
@@ -133,12 +134,12 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
-        <a href="home.html"><img src="assets/tttLogo.png" alt="logo" class="logo"></a>
+        <a href="managerHome.html"><img src="assets/tttLogo.png" alt="logo" class="logo"></a>
       </div>
-      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
-      <button class="nav-btn active" onclick="window.location.href='play.html'">🎮 Play</button>
-      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
-      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <button class="nav-btn" onclick="window.location.href='managerHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='create_tournament.html'">🏆 Create Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href=''">✏️ Edit Tournaments</button>
+      <button class="nav-btn" onclick="window.location.href='managerProfile.html'">👤 Profile</button>
       <p id="greeting"></p>
       <p class="signout-link" id="signout"><a href="logout.php">Sign Out</a></p>
     </nav>
@@ -198,11 +199,11 @@
     }
 
     // Auth check on load
-    fetch('get_session.php')
+    fetch('get_managerSession.php')
       .then(res => res.json())
       .then(data => {
         if (!data.loggedIn || !data.isManager) {
-          window.location.href = 'play.html';
+          window.location.href = 'gameManagerLogin.html';
           return;
         }
         document.getElementById('greeting').textContent = `Hello, ${data.username}`;
@@ -230,7 +231,7 @@
         .then(data => {
           if (data.success) {
             showToast('Tournament created successfully!');
-            setTimeout(() => window.location.href = 'play.html', 2000);
+            setTimeout(() => window.location.href = 'managerHome.html', 2000);
           } else {
             showToast(data.message || 'Failed to create tournament.');
           }

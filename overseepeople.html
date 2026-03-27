@@ -14,15 +14,16 @@
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
-        <a href="home.html">
+        <a href="adminHome.html">
           <img src="assets/tttLogo.png" alt="logo" class="logo">
         </a>
       </div> 
       <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
-      <button class="nav-btn" onclick="window.location.href=''">👥 Oversee People</button>
+      <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
       <button class="nav-btn" onclick="window.location.href='editAdmin.html'">✏️ Edit Admins</button>
       <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
       <button class="nav-btn" onclick="window.location.href='adminProfile.html'">👤 Profile</button>
+      <p id="greeting"></p>
       <p class="signout-link" id="signout">
         <a href="logout.php">Sign Out</a>
       </p>
@@ -156,14 +157,14 @@
     let allUsers = [];
     let selectedID = null;
 
-    fetch('get_session.php')
+    fetch('get_adminSession.php')
       .then(res => res.json())
       .then(data => {
         const greeting = document.getElementById('greeting');
         const signout = document.getElementById('signout');
 
         if (data.loggedIn) {
-          greeting.textContent = `Hello, ${data.username}`;
+          greeting.textContent = `Hello, ${data.name}`;
           signout.style.display = 'block'; 
         } else {
           greeting.textContent = ''; // or "Hello, Guest"
@@ -186,15 +187,6 @@
         adminIDForSession = data.adminID;
         loadUser();
       });
-
-    // fetch('get_session.php')
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     const profileBtn = document.getElementById('profile-btn');
-    //     profileBtn.onclick = () => window.location.href = data.loggedIn
-    //       ? `profile.html?id=${data.userID}`
-    //       : 'login.html';
-    //   });
 
     function loadUser() {
       fetch('people_handler.php?action=all')

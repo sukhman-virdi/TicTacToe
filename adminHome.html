@@ -7,17 +7,18 @@
   <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="home.css"/>
 </head>
 <body> 
  
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
-        <a href="home.html">
+        <a href="adminHome.html">
           <img src="assets/tttLogo.png" alt="logo" class="logo">
         </a>
       </div> 
-      <button class="nav-btn" onclick="window.location.href=''">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
       <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
       <button class="nav-btn" onclick="window.location.href='editAdmin.html'">✏️ Edit Admins</button>
       <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
@@ -46,14 +47,14 @@
   
   <script>
   //Load greeting message
-    fetch('get_session.php')
+    fetch('get_adminSession.php')
       .then(res => res.json())
       .then(data => {
         const greeting = document.getElementById('greeting');
         const signout = document.getElementById('signout');
 
         if (data.loggedIn) {
-          greeting.textContent = `Hello, ${data.username}`;
+          greeting.textContent = `Hello, ${data.name}`;
           signout.style.display = 'block'; 
         } else {
           greeting.textContent = ''; // or "Hello, Guest"
