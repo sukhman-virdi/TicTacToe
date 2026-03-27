@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match History – Tic Tac Toe</title>
+    <link rel="icon" type="image/x-icon" href="/assets/logo.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* ── Layout ── */
+      .matches-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 40px;
+        gap: 32px;
+        min-height: 100vh;
+      }
+
+
+      .page-title {
+        font-family: "Righteous", cursive;
+        font-size: 10rem;
+        font-weight: 1200;
+        letter-spacing: 2px;
+        text-align: center;
+        text-transform: uppercase;
+
+        background: linear-gradient(
+          219deg,
+          #186cb8 19%,
+          transparent 19%,
+          transparent 20%,
+          #2a9a9f 20%,
+          #2a9a9f 39%,
+          transparent 39%,
+          transparent 40%,
+          #f1b211 40%,
+          #f1b211 59%,
+          transparent 59%,
+          transparent 60%,
+          #e83611 60%,
+          #e83611 79%,
+          transparent 79%,
+          transparent 80%,
+          #f9002f 80%
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+
+      /* ── Search ── */
+      .search-bar {
+        display: flex;
+        gap: 14px;
+        width: 100%;
+        max-width: 700px;
+        align-items: center;
+      }
+
+      .search-bar input {
+        flex: 1;
+        padding: 13px 18px;
+        border: 2px solid #d4d4d4;
+        border-radius: 10px;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.95rem;
+        color: #333;
+        background: #fafafa;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .search-bar input:focus {
+        border-color: #f1b211;
+        background: #fff;
+      }
+
+      .search-vs {
+        font-family: "Righteous", cursive;
+        font-size: 1rem;
+        color: #bbb;
+        flex-shrink: 0;
+      }
+
+      .search-btn {
+        padding: 13px 26px;
+        border: 2px solid #d4d4d4;
+        border-radius: 10px;
+        background: transparent;
+        font-family: "Nunito", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #333;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: color 0.3s;
+        flex-shrink: 0;
+      }
+
+      .search-btn span {
+        position: relative;
+        z-index: 2;
+      }
+
+      .search-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: #f1b211;
+        transition: width 0.3s;
+        border-radius: 8px;
+      }
+
+      .search-btn:hover {
+        color: #fff;
+      }
+      .search-btn:hover::after {
+        width: 100%;
+      }
+
+      /* ── Results list ── */
+      .results-section {
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .results-label {
+        font-family: "Nunito", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #bbb;
+      }
+
+      .match-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        background: #fafafa;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          transform 0.15s;
+        gap: 12px;
+      }
+
+      .match-row:hover {
+        border-color: #f1b211;
+        background: #fffbf0;
+        transform: translateX(4px);
+      }
+
+      .match-row.active {
+        border-color: #f1b211;
+        background: #fff8e1;
+      }
+
+      .match-players {
+        font-family: "Nunito", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .match-players .vs {
+        color: #ccc;
+        font-weight: 400;
+        margin: 0 6px;
+      }
+
+      .match-meta {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .match-date {
+        font-family: "Nunito", sans-serif;
+        font-size: 0.82rem;
+        color: #aaa;
+      }
+
+      .result-badge {
+        font-family: "Nunito", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+
+      .badge-draw {
+        background: #f0f0f0;
+        color: #888;
+      }
+      .badge-player1 {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .badge-player2 {
+        background: #fce4ec;
+        color: #c62828;
+      }
+
+      .no-results {
+        font-family: "Nunito", sans-serif;
+        color: #bbb;
+        font-size: 0.95rem;
+        padding: 20px 0;
+        text-align: center;
+      }
+
+      /* ── Match viewer modal ── */
+      .viewer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+
+      .viewer-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .viewer-box {
+        background: #fff;
+        border-radius: 18px;
+        padding: 36px 40px;
+        width: 480px;
+        max-width: 95vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        transform: translateY(20px);
+        transition: transform 0.25s;
+      }
+
+      .viewer-overlay.show .viewer-box {
+        transform: translateY(0);
+      }
+
+      .viewer-header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .viewer-title {
+        font-family: "Righteous", cursive;
+        font-size: 1.2rem;
+        color: #333;
+        letter-spacing: 1px;
+      }
+
+      .viewer-close {
+        background: none;
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+        color: #bbb;
+        line-height: 1;
+        transition: color 0.2s;
+      }
+
+      .viewer-close:hover {
+        color: #333;
+      }
+
+      /* ── Board ── */
+      .mini-board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 8px;
+      }
+
+      .mini-cell {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #d4d4d4;
+        border-radius: 10px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Righteous", cursive;
+        font-size: 2.4rem;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+
+      .mini-cell.pop {
+        animation: cellPop 0.3s ease;
+      }
+
+      @keyframes cellPop {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .mini-cell[data-val="X"] {
+        color: #186cb8;
+      }
+      .mini-cell[data-val="O"] {
+        color: #e83611;
+      }
+
+      /* ── Move controls ── */
+      .move-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .move-btn {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #d4d4d4;
+        border-radius: 8px;
+        background: transparent;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+
+      .move-btn:hover:not(:disabled) {
+        border-color: #f1b211;
+        background: #fffbf0;
+      }
+      .move-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .move-counter {
+        font-family: "Nunito", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #555;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .move-slider {
+        width: 200px;
+        accent-color: #f1b211;
+      }
+
+      .viewer-winner {
+        font-family: "Nunito", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #555;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="logo-container">
+          <a href="home.html"
+            ><img src="assets/tttLogo.png" alt="logo" class="logo"
+          /></a>
+        </div>
+        <button class="nav-btn" onclick="window.location.href = 'home.html'">
+          🏠 Home
+        </button>
+        <button class="nav-btn" onclick="window.location.href = 'play.html'">
+          🎮 Play
+        </button>
+        <button
+          class="nav-btn"
+          onclick="window.location.href = 'leaderboard.html'"
+        >
+          🏆 Leaderboard
+        </button>
+        <button
+          class="nav-btn active"
+          onclick="window.location.href = 'matches.html'"
+        >
+          🔍 Matches
+        </button>
+        <button class="nav-btn" onclick="window.location.href = 'profile.html'">
+          👤 Profile
+        </button>
+        <p id="greeting"></p>
+        <p class="signout-link" id="signout">
+          <a href="logout.php">Sign Out</a>
+        </p>
+      </nav>
+    </div>
+
+    <main class="matches-main">
+      <h1 class="page-title">🔍 Match History</h1>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <input type="text" id="player1" placeholder="Player 1 username" />
+        <span class="search-vs">VS</span>
+        <input
+          type="text"
+          id="player2"
+          placeholder="Player 2 username (optional)"
+        />
+        <button class="search-btn" onclick="searchMatches()">
+          <span>Search</span>
+        </button>
+      </div>
+
+      <!-- Results -->
+      <div class="results-section" id="results-section" style="display: none">
+        <p class="results-label" id="results-label"></p>
+        <div id="results-list"></div>
+      </div>
+    </main>
+
+    <!-- Match Viewer -->
+    <div
+      class="viewer-overlay"
+      id="viewer-overlay"
+      onclick="closeViewer(event)"
+    >
+      <div class="viewer-box">
+        <div class="viewer-header">
+          <span class="viewer-title" id="viewer-title">Match Replay</span>
+          <button class="viewer-close" onclick="closeViewerDirect()">✕</button>
+        </div>
+
+        <div class="mini-board" id="mini-board">
+          <div class="mini-cell" data-index="0"></div>
+          <div class="mini-cell" data-index="1"></div>
+          <div class="mini-cell" data-index="2"></div>
+          <div class="mini-cell" data-index="3"></div>
+          <div class="mini-cell" data-index="4"></div>
+          <div class="mini-cell" data-index="5"></div>
+          <div class="mini-cell" data-index="6"></div>
+          <div class="mini-cell" data-index="7"></div>
+          <div class="mini-cell" data-index="8"></div>
+        </div>
+
+        <div class="move-controls">
+          <button class="move-btn" id="btn-first" onclick="goToMove(0)">
+            ⏮
+          </button>
+          <button class="move-btn" id="btn-prev" onclick="stepMove(-1)">
+            ◀
+          </button>
+          <span class="move-counter" id="move-counter">Move 0 / 0</span>
+          <button class="move-btn" id="btn-next" onclick="stepMove(1)">
+            ▶
+          </button>
+          <button
+            class="move-btn"
+            id="btn-last"
+            onclick="goToMove(moves.length - 1)"
+          >
+            ⏭
+          </button>
+        </div>
+
+        <input
+          type="range"
+          class="move-slider"
+          id="move-slider"
+          min="0"
+          value="0"
+          oninput="goToMove(parseInt(this.value))"
+        />
+
+        <p class="viewer-winner" id="viewer-winner"></p>
+      </div>
+    </div>
+
+    <script>
+      let moves = []; // array of board strings from the server
+      let currentMove = 0;
+      let viewerMatch = null;
+
+      // Session greeting
+      fetch("get_session.php")
+        .then((r) => r.json())
+        .then((d) => {
+          document.getElementById("greeting").textContent = d.loggedIn
+            ? `Hello, ${d.username}`
+            : "";
+          document.getElementById("signout").style.display = d.loggedIn
+            ? "block"
+            : "none";
+        });
+
+      // Allow Enter key to search
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") searchMatches();
+      });
+
+      function searchMatches() {
+        const p1 = document.getElementById("player1").value.trim();
+        const p2 = document.getElementById("player2").value.trim();
+
+        if (!p1) {
+          document.getElementById("player1").style.borderColor = "red";
+          return;
+        }
+        document.getElementById("player1").style.borderColor = "#d4d4d4";
+
+        const params = new URLSearchParams({ player1: p1 });
+        if (p2) params.append("player2", p2);
+
+        fetch("get_matches.php?" + params)
+          .then((r) => r.json())
+          .then((data) => renderResults(data, p1, p2));
+      }
+
+      function renderResults(matches, p1, p2) {
+        const section = document.getElementById("results-section");
+        const label = document.getElementById("results-label");
+        const list = document.getElementById("results-list");
+
+        section.style.display = "flex";
+
+        if (matches.error) {
+          label.textContent = "Error";
+          list.innerHTML = `<p class="no-results">${matches.error}</p>`;
+          return;
+        }
+
+        label.textContent = matches.length
+          ? `${matches.length} match${matches.length > 1 ? "es" : ""} found`
+          : "No matches found";
+
+        if (!matches.length) {
+          list.innerHTML =
+            '<p class="no-results">No matches between these players.</p>';
+          return;
+        }
+
+        list.innerHTML = matches
+          .map((m) => {
+            const winner = m.WinnerName
+              ? m.WinnerName === m.Player1
+                ? "badge-player1"
+                : "badge-player2"
+              : "badge-draw";
+            const winnerLabel = m.WinnerName ? `${m.WinnerName} wins` : "Draw";
+            return `
+          <div class="match-row" onclick="openViewer(${m.MatchID}, '${m.Player1}', '${m.Player2}', '${m.WinnerName || ""}', this)">
+            <span class="match-players">
+              ${m.Player1} <span class="vs">vs</span> ${m.Player2}
+            </span>
+            <span class="match-meta">
+              <span class="match-date">${m.Match_Date}</span>
+              <span class="result-badge ${winner}">${winnerLabel}</span>
+            </span>
+          </div>`;
+          })
+          .join("");
+      }
+
+      function openViewer(matchID, p1, p2, winner, rowEl) {
+        // Highlight active row
+        document
+          .querySelectorAll(".match-row")
+          .forEach((r) => r.classList.remove("active"));
+        rowEl.classList.add("active");
+
+        viewerMatch = { matchID, p1, p2, winner };
+        document.getElementById("viewer-title").textContent = `${p1} vs ${p2}`;
+        document.getElementById("viewer-winner").textContent = winner
+          ? `🏆 ${winner} won this match`
+          : "🤝 This match ended in a draw";
+
+        fetch(`get_match_moves.php?match_id=${matchID}`)
+          .then((r) => r.json())
+          .then((data) => {
+            moves = data.moves || [];
+            currentMove = 0;
+
+            const slider = document.getElementById("move-slider");
+            slider.max = Math.max(0, moves.length - 1);
+            slider.value = 0;
+
+            renderBoard(moves.length ? moves[0] : ",,,,,,,,,");
+            updateControls();
+            document.getElementById("viewer-overlay").classList.add("show");
+          });
+      }
+
+      function closeViewer(e) {
+        // Only close if clicking the overlay itself, not the box
+        if (e.target === document.getElementById("viewer-overlay"))
+          closeViewerDirect();
+      }
+
+      function closeViewerDirect() {
+        document.getElementById("viewer-overlay").classList.remove("show");
+        document
+          .querySelectorAll(".match-row")
+          .forEach((r) => r.classList.remove("active"));
+      }
+
+      function renderBoard(boardString) {
+        const cells = document.querySelectorAll(".mini-cell");
+        const values = boardString.split(",");
+        cells.forEach((cell, i) => {
+          const prev = cell.getAttribute("data-val");
+          const next = values[i] || "";
+          cell.textContent = next;
+          cell.setAttribute("data-val", next);
+          // Pop animation only on newly placed pieces
+          if (next && next !== prev) {
+            cell.classList.remove("pop");
+            void cell.offsetWidth; // reflow
+            cell.classList.add("pop");
+          }
+        });
+      }
+
+      function goToMove(index) {
+        if (!moves.length) return;
+        currentMove = Math.max(0, Math.min(index, moves.length - 1));
+
+        // If going back, re-render from scratch to clear the board correctly
+        renderBoard(moves[currentMove]);
+        document.getElementById("move-slider").value = currentMove;
+        updateControls();
+      }
+
+      function stepMove(dir) {
+        goToMove(currentMove + dir);
+      }
+
+      function updateControls() {
+        const total = moves.length;
+        document.getElementById("move-counter").textContent = total
+          ? `Move ${currentMove + 1} / ${total}`
+          : "No moves recorded";
+        document.getElementById("btn-first").disabled = currentMove === 0;
+        document.getElementById("btn-prev").disabled = currentMove === 0;
+        document.getElementById("btn-next").disabled = currentMove >= total - 1;
+        document.getElementById("btn-last").disabled = currentMove >= total - 1;
+      }
+    </script>
+  </body>
+</html>
