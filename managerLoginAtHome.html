@@ -22,7 +22,7 @@
       <button class="nav-btn" onclick="window.location.href='game.html'">🎮 Play</button>
       <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
       <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
-      <p class="signout-link">
+      <p class="signout-link" id="signout">
         <a href="logout.php">Sign Out</a>
       </p>
     </nav> 
@@ -114,6 +114,23 @@
           resultMsg.className = 'result-msg error';
         });
     }
+
+    fetch('get_session.php')
+      .then(res => res.json())
+      .then(data => {
+        const greeting = document.getElementById('greeting');
+        const signout = document.getElementById('signout');
+
+        if (data.loggedIn) {
+          greeting.textContent = `Hello, ${data.username}`;
+          signout.style.display = 'block'; 
+        } else {
+          greeting.textContent = ''; // or "Hello, Guest"
+          signout.style.display = 'none';
+        }
+      })
+      .catch(err => console.error(err));
+
 
     // Clear red border when user starts typing
     document.getElementById('login').addEventListener('input', function() {

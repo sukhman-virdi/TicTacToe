@@ -37,17 +37,21 @@ checkLogin();
 
 //Load greeting message
 fetch('get_session.php')
-  .then(res => res.json())
-  .then(data => {
-    const greeting = document.getElementById('greeting');
+      .then(res => res.json())
+      .then(data => {
+        const greeting = document.getElementById('greeting');
+        const signout = document.getElementById('signout');
 
-    if (data.loggedIn) {
-      greeting.textContent = `Hello, ${data.username}`;
-    } else {
-      greeting.textContent = ''; // or "Hello, Guest"
-    }
-  })
-  .catch(err => console.error(err));
+        if (data.loggedIn) {
+          greeting.textContent = `Hello, ${data.username}`;
+          signout.style.display = 'block'; 
+        } else {
+          greeting.textContent = ''; // or "Hello, Guest"
+          signout.style.display = 'none';
+        }
+      })
+      .catch(err => console.error(err));
+
 
 var cells = document.querySelectorAll(".cell");
 var statusEl = document.getElementById("status");
