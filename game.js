@@ -35,6 +35,20 @@ function checkLogin() {
 
 checkLogin();
 
+//Load greeting message
+fetch('get_session.php')
+  .then(res => res.json())
+  .then(data => {
+    const greeting = document.getElementById('greeting');
+
+    if (data.loggedIn) {
+      greeting.textContent = `Hello, ${data.username}`;
+    } else {
+      greeting.textContent = ''; // or "Hello, Guest"
+    }
+  })
+  .catch(err => console.error(err));
+
 var cells = document.querySelectorAll(".cell");
 var statusEl = document.getElementById("status");
 

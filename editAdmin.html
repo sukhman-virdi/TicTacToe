@@ -23,6 +23,7 @@
             <button class="nav-btn" onclick="window.location.href=''">✏️ Edit Admins</button>
       <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
       <button class="nav-btn" onclick="window.location.href='adminProfile.html'">👤 Profile</button>
+      <p id="greeting"></p>
       <p class="signout-link">
         <a href="logout.php">Sign Out</a>
       </p>
@@ -146,6 +147,19 @@
           renderTable(data);
         });
     }
+    //Load greeting message
+    fetch('get_session.php')
+      .then(res => res.json())
+      .then(data => {
+        const greeting = document.getElementById('greeting');
+
+        if (data.loggedIn) {
+          greeting.textContent = `Hello, ${data.username}`;
+        } else {
+          greeting.textContent = ''; // or "Hello, Guest"
+        }
+      })
+      .catch(err => console.error(err));
 
     function renderTable(data, fields = ["AdminID","Name","Email","Level"]) {
       const tbody = document.getElementById('admins-tbody');
