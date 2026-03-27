@@ -154,15 +154,6 @@
 
     loadAchievements();
 
-    fetch('get_session.php')
-      .then(res => res.json())
-      .then(data => {
-        const profileBtn = document.getElementById('profile-btn');
-        profileBtn.onclick = () => window.location.href = data.loggedIn
-          ? `profile.html?id=${data.userID}`
-          : 'login.html';
-      });
-
     function loadAchievements() {
       fetch('achievement_handler.php?action=all')
         .then(res => res.json())
@@ -378,6 +369,7 @@
         if (e.target === this) this.style.display = 'none';
       });
     });
+    
   </script>
 
 </body>
