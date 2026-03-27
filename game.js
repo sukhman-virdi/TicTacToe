@@ -73,6 +73,7 @@ function resetBoard() {
     cell.textContent = "";
     cell.removeAttribute("data-val");
     cell.disabled = false;
+    cell.classList.remove("winning-cell");
   });
   statusEl.textContent = "Your turn (" + playerSymbol + ")";
   if (currentPlayer === cpuSymbol) {
@@ -101,12 +102,17 @@ function makeMove(index, symbol) {
   moveHistory.push(board.join(","));
 
   if (checkWin(symbol)) {
-    var playerWon = symbol === playerSymbol;
-    statusEl.textContent = playerWon ? "🎉 You win!" : "🤖 AI wins!";
-    isGameOver = true;
-    cells.forEach(function (cell) { cell.disabled = true; });
-    saveGame(playerWon ? "win" : "loss");
-
+    var won = checkWin(symbol);
+    if (won) {
+      won.forEach(function(i) {
+        cells[i].classList.add("winning-cell");
+      });
+      var playerWon = symbol === playerSymbol;
+      statusEl.textContent = playerWon ? "🎉 You win!" : "🤖 AI wins!";
+      isGameOver = true;
+      cells.forEach(function (cell) { cell.disabled = true; });
+      saveGame(playerWon ? "win" : "loss");
+  }
   } else if (board.every(function (v) { return v !== ""; })) {
     statusEl.textContent = "🤝 It's a draw!";
     isGameOver = true;
@@ -170,11 +176,13 @@ function findWinningMove(symbol) {
 }
 
 function checkWin(symbol) {
-  return winPatterns.some(function (p) {
-    return p.every(function (i) {
-      return board[i] === symbol;
-    });
-  });
+  for (var i = 0; i < winPatterns.length; i++) {
+    var p = winPatterns[i];
+    if (p.every(function (i) { return board[i] === symbol; })) {
+      return p; // return the winning pattern
+    }
+  }
+  return null; //if no win, return null
 }
 
 function getEmptyCells() {

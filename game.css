@@ -142,3 +142,15 @@
   padding: 18px 0;
   font-size: 1.2rem;
 }
+
+.cell.winning-cell {
+  background: #fff3cd;
+  border-color: #f1b211;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
