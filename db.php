@@ -4,8 +4,8 @@ $host = 'localhost';
 $user = 'root';
 $db   = 'tictactoe';
 
-//List of possible passwords
-$passwords = ['', 'root'];
+//common passwords to try
+$passwords = ['', 'root', 'password'];
 
 //test each password and break loop if the connection is successful
 foreach ($passwords as $pass) {

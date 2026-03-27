@@ -30,69 +30,6 @@ hr {
     padding: 10px 0 0 0;
 }
 
-/* ── Sidebar ── */
-.sidebar {
-  width: 190px;
-  min-height: 100vh;
-  background: var(--sidebar-bg);
-  flex-shrink: 0;
-  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
-} 
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.nav-btn {
-  display: block;
-  width: 100%;
-  padding: 16px 12px;
-  background: transparent;
-  border: none;
-  border-bottom-style: solid;
-  border-top-style: solid;
-  border-width: 1px;
-  color: #7c7c7c;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.nav-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.nav-btn.active {
-  background: rgba(255, 255, 255, 0.25);
-  border-left: 3px solid var(--amber);
-  padding-left: 9px;
-}
-
-.signout-link {
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-  text-align: center;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  position: absolute;
-}
-
-.signout-link a {
-  color: var(--amber);
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.signout-link a:hover {
-  text-decoration: underline;
-}
 
 
 /* ── Main content ── */
