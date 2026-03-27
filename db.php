@@ -3,23 +3,23 @@
 $host = 'localhost';
 $user = 'root';
 $db   = 'tictactoe';
+$passwords = ['root', '', 'password'];
 
-//common passwords to try
-$passwords = ['', 'root', 'password'];
-
-//test each password and break loop if the connection is successful
-foreach ($passwords as $pass) {
-    $conn = mysqli_connect($host, $user, $pass, $db);
-
-    if ($conn) {
-        break;
+function tryConnect($host, $user, $pass, $db) {
+    try {
+        $conn = mysqli_connect($host, $user, $pass, $db);
+        return $conn;
+    } catch (mysqli_sql_exception $e) {
+        return null;
     }
 }
 
-if (!$conn) {
-    die(json_encode([
-        'error' => 'Connection failed: ' . mysqli_connect_error()
-    ]));
+foreach($passwords as $p){
+    $conn = tryConnect($host,$user,$p,$db);
+    if($conn) break;
 }
 
+if (!$conn) {
+    die(json_encode(['error' => 'Both connection attempts failed.']));
+}
 ?>
