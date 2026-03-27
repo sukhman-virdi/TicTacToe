@@ -178,9 +178,24 @@
       <div class="tab-panel" id="tab-upgrade">
 
         <p class="upgrade-info">
-          Already have a player account? Enter your credentials below to add
-          <strong>Tournament Manager</strong> privileges — you'll keep everything you have.
+          Add roles to your existing account — you'll keep everything you already have.
+          <strong>Player</strong> lets you join tournaments &nbsp;·&nbsp; <strong>Manager</strong> lets you create them.
         </p>
+
+        <div class="form-group">
+          <p style="font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-bottom:4px;">Add Role</p>
+          <div class="checkbox-row">
+            <label class="checkbox-option">
+              <input type="checkbox" id="up-type-player" />
+              🎮 Player
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" id="up-type-manager" />
+              🛠️ Manager
+            </label>
+          </div>
+          <p class="checkbox-hint">Only roles you don't already have will be added.</p>
+        </div>
 
         <div class="form-group">
           <label for="up-username">Username</label>
@@ -193,7 +208,7 @@
         </div>
 
         <button class="btn btn-play" onclick="handleUpgrade()">
-          <span>Upgrade to Manager</span>
+          <span>Upgrade Account</span>
         </button>
 
         <p class="result-msg" id="upgrade-result-msg"></p>
@@ -285,10 +300,17 @@
 
     // ── UPGRADE EXISTING ──
     function handleUpgrade() {
-      const username  = document.getElementById('up-username').value.trim();
-      const password  = document.getElementById('up-password').value;
-      const resultMsg = document.getElementById('upgrade-result-msg');
+      const addPlayer  = document.getElementById('up-type-player').checked;
+      const addManager = document.getElementById('up-type-manager').checked;
+      const username   = document.getElementById('up-username').value.trim();
+      const password   = document.getElementById('up-password').value;
+      const resultMsg  = document.getElementById('upgrade-result-msg');
 
+      if (!addPlayer && !addManager) {
+        resultMsg.textContent = 'Please select at least one role to add';
+        resultMsg.className = 'result-msg error';
+        return;
+      }
       if (!username || !password) {
         resultMsg.textContent = 'Please fill in all fields';
         resultMsg.className = 'result-msg error';
@@ -296,14 +318,16 @@
       }
 
       const fd = new FormData();
-      fd.append('username', username);
-      fd.append('password', password);
+      fd.append('username',   username);
+      fd.append('password',   password);
+      fd.append('addPlayer',  addPlayer  ? '1' : '0');
+      fd.append('addManager', addManager ? '1' : '0');
 
-      fetch('upgrade_to_manager.php', { method: 'POST', body: fd })
+      fetch('upgrade_account.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {
           if (d.success) {
-            resultMsg.textContent = '✓ Account upgraded! Redirecting...';
+            resultMsg.textContent = '✓ ' + d.message + ' Redirecting...';
             resultMsg.className = 'result-msg success';
             setTimeout(() => window.location.href = 'home.html', 1500);
           } else {
