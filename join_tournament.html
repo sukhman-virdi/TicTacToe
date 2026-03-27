@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe – Join Tournament</title>
+  <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .page-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding: 50px 60px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .page-title {
+      font-family: 'Righteous', cursive;
+      font-size: 2rem;
+      color: #333;
+      letter-spacing: 2px;
+      align-self: flex-start;
+    }
+
+    .tournament-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .tournament-table th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #999;
+      border-bottom: 2px solid #e8e8e8;
+    }
+
+    .tournament-table td {
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      color: #333;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+    }
+
+    .tournament-table tr:hover td {
+      background: #fffbf0;
+    }
+
+    .difficulty-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .diff-1 { background: #e8f5e9; color: #2e7d32; }
+    .diff-2 { background: #e3f2fd; color: #1565c0; }
+    .diff-3 { background: #fff8e1; color: #f57f17; }
+    .diff-4 { background: #fce4ec; color: #c62828; }
+    .diff-5 { background: #f3e5f5; color: #6a1b9a; }
+
+    .join-btn {
+      padding: 7px 20px;
+      border: 2px solid #f1b211;
+      border-radius: 8px;
+      background: transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #f1b211;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .join-btn:hover {
+      background: #f1b211;
+      color: #fff;
+    }
+
+    .join-btn:disabled {
+      border-color: #ddd;
+      color: #bbb;
+      cursor: not-allowed;
+    }
+
+    .join-btn:disabled:hover {
+      background: transparent;
+      color: #bbb;
+    }
+
+    .already-badge {
+      font-size: 0.8rem;
+      color: #aaa;
+      font-style: italic;
+    }
+
+    .loading-text {
+      font-family: 'Nunito', sans-serif;
+      color: #aaa;
+      font-size: 1rem;
+      padding: 40px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #333;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+    }
+    .toast.show { pointer-events: auto; opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <div class="logo-container">
+        <a href="home.html"><img src="assets/tttLogo.png" alt="logo" class="logo"></a>
+      </div>
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn active" onclick="window.location.href='play.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p id="greeting"></p>
+      <p class="signout-link" id="signout"><a href="logout.php">Sign Out</a></p>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="page-card">
+      <h1 class="page-title">🏆 Join a Tournament</h1>
+
+      <table class="tournament-table" id="tournament-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>Difficulty</th>
+            <th>Prize Money</th>
+            <th>Manager</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tournament-body">
+          <tr><td colspan="6" class="loading-text">Loading tournaments...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentUserID = null;
+    const diffLabels = ['', 'Beginner', 'Easy', 'Medium', 'Hard', 'Expert'];
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Load session then tournaments
+    fetch('get_session.php')
+      .then(res => res.json())
+      .then(data => {
+        if (data.loggedIn) {
+          currentUserID = data.userID;
+          document.getElementById('greeting').textContent = `Hello, ${data.username}`;
+          document.getElementById('signout').style.display = 'block';
+        } else {
+          window.location.href = 'login.html';
+        }
+        return fetch('get_tournaments.php');
+      })
+      .then(res => res.json())
+      .then(tournaments => renderTable(tournaments));
+
+    function renderTable(tournaments) {
+      const tbody = document.getElementById('tournament-body');
+      if (!tournaments.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="loading-text">No tournaments available.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = tournaments.map(t => {
+        const diff = parseInt(t.Difficulty) || 0;
+        const alreadyJoined = t.AlreadyJoined === '1' || t.AlreadyJoined === true;
+        return `
+          <tr>
+            <td><strong>${t.Name}</strong></td>
+            <td>${t.StartDate}</td>
+            <td><span class="difficulty-badge diff-${diff}">${diffLabels[diff] || diff}</span></td>
+            <td>$${parseInt(t.PrizeMoney).toLocaleString()}</td>
+            <td>${t.ManagerName}</td>
+            <td>
+              ${alreadyJoined
+                ? '<span class="already-badge">✓ Joined</span>'
+                : `<button class="join-btn" onclick="joinTournament(${t.TournamentID}, this)">Join</button>`
+              }
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function joinTournament(tournamentID, btn) {
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+
+      fetch('join_tournament.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tournament_id: tournamentID })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            btn.outerHTML = '<span class="already-badge">✓ Joined</span>';
+            showToast('Successfully joined the tournament!');
+          } else {
+            btn.disabled = false;
+            btn.textContent = 'Join';
+            showToast(data.message || 'Failed to join.');
+          }
+        });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe – Create Tournament</title>
+  <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .page-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding: 50px 60px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .page-title {
+      font-family: 'Righteous', cursive;
+      font-size: 2rem;
+      color: #333;
+      letter-spacing: 2px;
+      align-self: flex-start;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .form-group label {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #d4d4d4;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      color: #333;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #f1b211;
+      background: #fff;
+    }
+
+    .prize-preview {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .prize-preview span {
+      color: #f1b211;
+      font-weight: 700;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px 0;
+      border: 2px solid #d4d4d4;
+      border-radius: 12px;
+      background: transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #333;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.35s;
+      margin-top: 8px;
+    }
+
+    .submit-btn span { position: relative; z-index: 2; }
+
+    .submit-btn::after {
+      position: absolute;
+      content: "";
+      top: 0; left: 0;
+      width: 0; height: 100%;
+      background: #f1b211;
+      transition: width 0.35s;
+      border-radius: 10px;
+    }
+
+    .submit-btn:hover { color: #fff; }
+    .submit-btn:hover::after { width: 100%; }
+
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #333;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+    }
+    .toast.show { pointer-events: auto; opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <div class="logo-container">
+        <a href="home.html"><img src="assets/tttLogo.png" alt="logo" class="logo"></a>
+      </div>
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn active" onclick="window.location.href='play.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p id="greeting"></p>
+      <p class="signout-link" id="signout"><a href="logout.php">Sign Out</a></p>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="page-card">
+      <h1 class="page-title">🛠️ Create Tournament</h1>
+
+      <div class="form-group">
+        <label>Tournament Name</label>
+        <input type="text" id="name" placeholder="e.g. Summer Showdown" maxlength="50" />
+      </div>
+
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" id="start-date" />
+      </div>
+
+      <div class="form-group">
+        <label>Difficulty</label>
+        <select id="difficulty" onchange="updatePrize()">
+          <option value="">Select difficulty</option>
+          <option value="1">1 – Beginner</option>
+          <option value="2">2 – Easy</option>
+          <option value="3">3 – Medium</option>
+          <option value="4">4 – Hard</option>
+          <option value="5">5 – Expert</option>
+        </select>
+        <p class="prize-preview" id="prize-preview">Prize money: —</p>
+      </div>
+
+      <button class="submit-btn" onclick="submitTournament()">
+        <span>Create Tournament</span>
+      </button>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const prizeMap = { '1': 100, '2': 250, '3': 500, '4': 1000, '5': 2000 };
+
+    function updatePrize() {
+      const val = document.getElementById('difficulty').value;
+      const preview = document.getElementById('prize-preview');
+      preview.innerHTML = val
+        ? `Prize money: <span>$${prizeMap[val].toLocaleString()}</span>`
+        : 'Prize money: —';
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // Auth check on load
+    fetch('get_session.php')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.loggedIn || !data.isManager) {
+          window.location.href = 'play.html';
+          return;
+        }
+        document.getElementById('greeting').textContent = `Hello, ${data.username}`;
+        document.getElementById('signout').style.display = 'block';
+      });
+
+    // Set min date to today
+    document.getElementById('start-date').min = new Date().toISOString().split('T')[0];
+
+    function submitTournament() {
+      const name       = document.getElementById('name').value.trim();
+      const startDate  = document.getElementById('start-date').value;
+      const difficulty = document.getElementById('difficulty').value;
+
+      if (!name)       { showToast('Please enter a tournament name.'); return; }
+      if (!startDate)  { showToast('Please select a start date.'); return; }
+      if (!difficulty) { showToast('Please select a difficulty.'); return; }
+
+      fetch('create_tournament.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, start_date: startDate, difficulty: parseInt(difficulty) })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showToast('Tournament created successfully!');
+            setTimeout(() => window.location.href = 'play.html', 2000);
+          } else {
+            showToast(data.message || 'Failed to create tournament.');
+          }
+        });
+    }
+  </script>
+
+</body>
+</html>

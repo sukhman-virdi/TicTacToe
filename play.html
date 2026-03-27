@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe – Play</title>
+  <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .play-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+      padding: 60px 80px;
+    }
+
+    .play-title {
+      font-family: 'Righteous', cursive;
+      font-size: 2.2rem;
+      color: #333;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .play-options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .play-option-btn {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 380px;
+      padding: 22px 28px;
+      border: 2px solid #d4d4d4;
+      border-radius: 14px;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      color: #333;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.35s, border-color 0.35s;
+      text-align: left;
+    }
+
+    .play-option-btn span {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .play-option-btn::after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: #f1b211;
+      transition: width 0.35s;
+      border-radius: 12px;
+    }
+
+    .play-option-btn:hover { color: #fff; border-color: #f1b211; }
+    .play-option-btn:hover::after { width: 100%; }
+
+    .option-icon {
+      font-size: 2rem;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .option-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; }
+    .option-desc  { font-size: 0.8rem; font-weight: 400; opacity: 0.75; margin-top: 2px; }
+
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #333;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.show { pointer-events: auto; opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast a { color: #f1b211; text-decoration: none; margin-left: 6px; }
+    .toast a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <div class="logo-container">
+        <a href="home.html"><img src="assets/tttLogo.png" alt="logo" class="logo"></a>
+      </div>
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn active" onclick="window.location.href='play.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p id="greeting"></p>
+      <p class="signout-link" id="signout"><a href="logout.php">Sign Out</a></p>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="play-card">
+      <h1 class="play-title">How do you want to play?</h1>
+      <div class="play-options">
+
+        <!-- Quick Match — always available -->
+        <button class="play-option-btn" onclick="window.location.href='game.html'">
+          <span class="option-icon">⚡</span>
+          <span>
+            <span class="option-title">Quick Match</span>
+            <span class="option-desc">Jump straight in and play against AI</span>
+          </span>
+        </button>
+
+        <!-- Join Tournament — requires Player account -->
+        <button class="play-option-btn" id="btn-join" onclick="handleJoin()">
+          <span class="option-icon">🏆</span>
+          <span>
+            <span class="option-title">Join Tournament</span>
+            <span class="option-desc">Compete in an existing tournament</span>
+          </span>
+        </button>
+
+        <!-- Create Tournament — requires Tournament Manager account -->
+        <button class="play-option-btn" id="btn-create" onclick="handleCreate()">
+          <span class="option-icon">🛠️</span>
+          <span>
+            <span class="option-title">Create Tournament</span>
+            <span class="option-desc">Set up and manage your own tournament</span>
+          </span>
+        </button>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let sessionData = null;
+
+    fetch('get_session.php')
+      .then(res => res.json())
+      .then(data => {
+        sessionData = data;
+        const greeting = document.getElementById('greeting');
+        const signout  = document.getElementById('signout');
+        if (data.loggedIn) {
+          greeting.textContent = `Hello, ${data.username}`;
+          signout.style.display = 'block';
+        } else {
+          greeting.textContent = '';
+          signout.style.display = 'none';
+        }
+      });
+
+    function showToast(html) {
+      const toast = document.getElementById('toast');
+      toast.innerHTML = html;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    function handleJoin() {
+      if (!sessionData || !sessionData.loggedIn) {
+        showToast('You must be logged in as a Player to join a tournament. <a href="login.html">Log in</a>');
+        return;
+      }
+      window.location.href = 'join_tournament.html';
+    }
+
+    function handleCreate() {
+      if (!sessionData || !sessionData.loggedIn) {
+        showToast('You must be logged in as a Tournament Manager to create a tournament. <a href="gameManagerLogin.html">Log in</a>');
+        return;
+      }
+      if (!sessionData.isManager) {
+        showToast('Only Tournament Managers can create tournaments. <a href="gameManagerLogin.html">Log in as a manager</a>');
+        return;
+      }
+      window.location.href = 'create_tournament.html';
+    }
+  </script>
+
+</body>
+</html>

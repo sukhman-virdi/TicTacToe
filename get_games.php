@@ -8,7 +8,7 @@ $query = "
         m.MatchID,
         m.Match_Date,
         m.Match_Time,
-        t.Name AS TournamentName,
+        CASE WHEN m.TournamentID IS NULL THEN 'AI Game' ELSE t.Name END AS TournamentName,
         CASE
             WHEN m.Winner_ID = ? THEN 'Win'
             WHEN m.Winner_ID IS NULL THEN 'Draw'
@@ -20,7 +20,7 @@ $query = "
         END AS Opponent
     FROM Match_Contained m
     JOIN Plays_inMatch pi ON m.MatchID = pi.MatchID
-    JOIN Tournament_Managed t ON m.TournamentID = t.TournamentID
+    LEFT JOIN Tournament_Managed t ON m.TournamentID = t.TournamentID
     JOIN GameUser g1 ON pi.Player1_ID = g1.UserID
     JOIN GameUser g2 ON pi.Player2_ID = g2.UserID
     WHERE pi.Player1_ID = ? OR pi.Player2_ID = ?
