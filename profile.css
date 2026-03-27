@@ -138,6 +138,19 @@ hr {
   background: #f9f9f9;
 }
 
+#games-tbody {
+  display: block;
+  max-height: 180px;
+  overflow-y: scroll;
+}
+
+#games-tbody tr,
+.box-table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
 .login-link {
   font-family: 'Nunito', sans-serif;
   font-size: 0.9rem;

@@ -75,8 +75,7 @@
           <th>Date</th>
         </tr>    
       </thead>
-      <tbody id ="games-tbody">   
-        <!-- Fill in table with games data collected from database -->
+      <tbody id="games-tbody">   
       </tbody>
     </table>
   </div>
@@ -148,7 +147,7 @@
               tbody.innerHTML = '<tr><td colspan="4">No games yet</td></tr>';
               return;
             }
-            games.forEach(game => {
+            games.slice(0,15).forEach(game => {
               const row = document.createElement('tr');
               row.innerHTML = `
                 <td>${game.Opponent}</td>
