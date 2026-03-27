@@ -42,8 +42,6 @@ hr {
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding: 0;
-  padding-top: 100px;
   gap: 0;
 }
 
