@@ -53,6 +53,25 @@
     </table>
     <div id="current-user"></div>
     </div>
+    <div class="box">
+        <h3>High Skill Difficulty Levels</h3>
+        <p id="difficultySubtitle" style="font-size: 0.85rem; color: #888;">
+          Difficulty levels where average player ranking exceeds the platform average
+        </p>
+        <hr/>
+        <table class="box-table">
+          <thead>
+            <tr>
+              <th>Difficulty Level</th>
+              <th>Avg Ranking Points</th>
+            </tr>
+          </thead>
+          <tbody id="difficulty-tbody">
+            <tr><td colspan="2">Loading...</td></tr>
+          </tbody>
+        </table>
+    </div>
+      
     </div>  
  
     
@@ -89,6 +108,28 @@
     if (stats) {
       // Use backticks for template literals
       stats.textContent = `Number of Players: ${data.totalPlayers} | Average Points: ${data.avgPoints}`;
+    }
+
+    // Update subtitle with actual average for context
+    const subtitle = document.getElementById('difficultySubtitle');
+    if (subtitle) {
+      subtitle.textContent = `Difficulty levels where average player ranking exceeds the platform average (${data.avgPoints} pts)`;
+    }
+ 
+    // Populate nested aggregation table
+    const tbody = document.getElementById('difficulty-tbody');
+    tbody.innerHTML = '';
+    if (!data.aboveAvgDifficulties || data.aboveAvgDifficulties.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#aaa;">No data yet</td></tr>';
+    } else {
+      data.aboveAvgDifficulties.forEach(d => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>Level ${d.Difficulty}</td>
+          <td>${d.AvgRanking} pts</td>
+        `;
+        tbody.appendChild(row);
+      });
     }
   })
   .catch(err => console.error("Error loading stats: ", err));
