@@ -77,8 +77,8 @@
 </div>  
  
     
-
-
+ 
+ 
     </div>  
   </main>
   <div id="login-popup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:999;">
@@ -94,72 +94,62 @@
   fetch('get_managerSession.php')
     .then(res => res.json())
     .then(data => {
+      // Update greeting
+      const greeting = document.getElementById('greeting');
+      const signout  = document.getElementById('signout');
+ 
       if (!data.loggedIn) {
-      // Show popup then redirect
-      document.getElementById('login-popup').style.display = 'flex';
-      setTimeout(() => {
-        window.location.href = 'gameManagerLogin.html';
-      }, 2000);
-      }  else {
-        // Logged in, load their profile
-        const GameManagerID = data.userID;
-
-        // Fetch manager profile
-        fetch(`get_manager.php?id=${GameManagerID}`)
-          .then(res => res.json())
-          .then(manager => {
-            console.log(manager);
-            document.getElementById('username').textContent = data.username;
-            document.getElementById('GameManagerID').textContent = manager.ManagerID;
-            document.getElementById('name').textContent = manager.Username;
-            document.getElementById('email').textContent = manager.Email;
-            document.getElementById('Tournaments_Organized').textContent = manager.Tournaments_Organized;
-          })
-          .catch(err => console.log('Error loading profile:', err));
+        // Show popup then redirect
+        document.getElementById('login-popup').style.display = 'flex';
+        setTimeout(() => {
+          window.location.href = 'gameManagerLogin.html';
+        }, 2000);
+        return;
       }
+ 
+      // Logged in — set greeting
+      greeting.textContent = `Hello, ${data.username}`;
+      signout.style.display = 'block';
+ 
+      const GameManagerID = data.userID;
+ 
+      // Fetch manager profile
+      fetch(`get_manager.php?id=${GameManagerID}`)
+        .then(res => res.json())
+        .then(manager => {
+          document.getElementById('username').textContent = data.username;
+          document.getElementById('GameManagerID').textContent = manager.ManagerID;
+          document.getElementById('name').textContent = manager.Username;
+          document.getElementById('email').textContent = manager.Email;
+          document.getElementById('Tournaments_Organized').textContent = manager.Tournaments_Organized;
+        })
+        .catch(err => console.log('Error loading profile:', err));
+ 
+      // Fetch achievements
+      fetch(`get_achievements.php?id=${GameManagerID}`)
+        .then(res => res.json())
+        .then(achievements => {
+          const tbody = document.getElementById('achievements-tbody');
+          tbody.innerHTML = '';
+          if (achievements.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2">No achievements yet</td></tr>';
+            return;
+          }
+          achievements.forEach(a => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${a.Title}</td>
+              <td>${a.Description}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(err => console.log('Error loading achievements:', err));
     });
-    //Fetch achievements
-    fetch(`get_achievements.php?id=${GameManagerID}`)
-      .then(res => res.json())
-      .then(achievements => {
-        const tbody = document.getElementById('achievements-tbody');
-        tbody.innerHTML = '';
-        if (achievements.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="2">No achievements yet</td></tr>';
-          return;
-        }
-        achievements.forEach(a => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${a.Title}</td>
-            <td>${a.Description}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      })
-      .catch(err => console.log('Error loading achievements:', err));
-
-    //Load greeting message
-    fetch('get_managerSession.php')
-      .then(res => res.json())
-      .then(data => {
-        const greeting = document.getElementById('greeting');
-        const signout = document.getElementById('signout');
-
-        if (data.loggedIn) {
-          greeting.textContent = `Hello, ${data.username}`;
-          signout.style.display = 'block'; 
-        } else {
-          greeting.textContent = ''; // or "Hello, Guest"
-          signout.style.display = 'none';
-        }
-      })
-      .catch(err => console.error(err));
-
+ 
 </script>
-
-
+ 
+ 
 </body> 
 </html>  
-
 
