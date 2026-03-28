@@ -62,6 +62,13 @@ Click Sign Up to create a player account, or use Login > Staff Login for admin/m
 -----------------------------------------------   
 
 Troubleshooting  
-Connection error — make sure MySQL is running in the XAMPP Control Panel  
+Connection error — Make sure MySQL is running in the XAMPP Control Panel  
+
+Setup.php not working — Open Command Prompt and navigate to the MySQL bin folder:
+cd C:\xampp\mysql\bin
+Run the setup script:
+mysql -u root -p tictactoe < "C:\xampp\htdocs\tictactoe\create_tables.sql"
+Enter your xampp admin password. Press Enter when prompted for no password (default XAMPP has no password)
+
 Access denied — press Enter for an empty password at the CMD prompt  
 Pages not found — confirm the folder is named tictactoe inside htdocs  
