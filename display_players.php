@@ -1,8 +1,7 @@
 <?php
-header('Content-Type: application/json');
 session_start();
- 
-$conn = new mysqli("localhost", "root", "", "tictactoe");
+include 'db.php';
+header('Content-Type: application/json');
  
 // Top 10 players
 $query = "SELECT p.PlayerID, gu.Username, p.TotalWins, p.TotalLosses, p.TotalDraws, p.RankingPoints
