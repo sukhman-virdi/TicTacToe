@@ -358,6 +358,11 @@ INSERT INTO Match_Contained VALUES (22, '2025-10-16', '10:00:00', 17, 14);
 INSERT INTO Match_Contained VALUES (23, '2025-10-16', '14:00:00', 19, 14);
 INSERT INTO Match_Contained VALUES (24, '2025-12-21', '11:00:00', 23, 15);
 INSERT INTO Match_Contained VALUES (25, '2025-12-21', '15:00:00', 20, 15);
+INSERT INTO Match_Contained VALUES (26, '2025-11-21', '10:00:00', 6, 5);
+INSERT INTO Match_Contained VALUES (27, '2025-11-21', '14:00:00', 3, 5);
+INSERT INTO Match_Contained VALUES (28, '2025-08-10', '10:00:00', 25, 8);
+INSERT INTO Match_Contained VALUES (29, '2025-11-07', '10:00:00', 29, 9);
+INSERT INTO Match_Contained VALUES (30, '2025-06-12', '10:00:00', 33, 11);
  
 INSERT INTO Move_MadeIn VALUES (1, 1, ',,,,X,,,,');
 INSERT INTO Move_MadeIn VALUES (1, 2, 'O,,,X,,,,,' );
@@ -469,6 +474,32 @@ INSERT INTO Move_MadeIn VALUES (22, 1, ',X,,,,,,,');
 INSERT INTO Move_MadeIn VALUES (23, 1, ',,,,,,,X,');
 INSERT INTO Move_MadeIn VALUES (24, 1, ',,,,,X,,,');
 INSERT INTO Move_MadeIn VALUES (25, 1, ',,,,,,,,X');
+
+INSERT INTO Move_MadeIn VALUES (26, 1, ',,,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (26, 2, 'O,,,X,,,,,' );
+INSERT INTO Move_MadeIn VALUES (26, 3, 'O,,X,X,,,,,');
+INSERT INTO Move_MadeIn VALUES (26, 4, 'O,,X,X,,,O,,');
+INSERT INTO Move_MadeIn VALUES (26, 5, 'O,X,X,X,,,O,,');
+
+INSERT INTO Move_MadeIn VALUES (27, 1, ',,,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (27, 2, ',O,,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (27, 3, ',O,,X,X,,,,');
+INSERT INTO Move_MadeIn VALUES (27, 4, ',O,,X,X,,O,,');
+INSERT INTO Move_MadeIn VALUES (27, 5, 'X,O,,X,X,,O,,');
+INSERT INTO Move_MadeIn VALUES (27, 6, 'X,O,X,X,X,,O,,');
+
+INSERT INTO Move_MadeIn VALUES (28, 1, 'X,,,,,,,,');
+INSERT INTO Move_MadeIn VALUES (28, 2, 'X,,O,,,,,,' );
+INSERT INTO Move_MadeIn VALUES (28, 3, 'X,,O,,X,,,,');
+
+INSERT INTO Move_MadeIn VALUES (29, 1, ',,,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (29, 2, ',O,,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (29, 3, ',O,,X,X,,,,');
+
+INSERT INTO Move_MadeIn VALUES (30, 1, 'X,,,,,,,,');
+INSERT INTO Move_MadeIn VALUES (30, 2, 'X,,O,,,,,,' );
+INSERT INTO Move_MadeIn VALUES (30, 3, 'X,,O,,X,,,,');
+INSERT INTO Move_MadeIn VALUES (30, 4, 'X,O,O,,X,,,,');
  
 INSERT INTO Plays_inMatch VALUES (1, 1, 2);
 INSERT INTO Plays_inMatch VALUES (2, 3, 4);
@@ -495,6 +526,11 @@ INSERT INTO Plays_inMatch VALUES (22, 16, 17);
 INSERT INTO Plays_inMatch VALUES (23, 18, 19);
 INSERT INTO Plays_inMatch VALUES (24, 22, 23);
 INSERT INTO Plays_inMatch VALUES (25, 20, 21);
+INSERT INTO Plays_inMatch VALUES (26, 6, 1);
+INSERT INTO Plays_inMatch VALUES (27, 3, 6);
+INSERT INTO Plays_inMatch VALUES (28, 25, 24);
+INSERT INTO Plays_inMatch VALUES (29, 29, 28);
+INSERT INTO Plays_inMatch VALUES (30, 33, 34);
  
 INSERT INTO Awarded VALUES (1, 1, '2025-03-05');
 INSERT INTO Awarded VALUES (3, 1, '2025-03-06');
@@ -518,10 +554,32 @@ INSERT INTO Edits VALUES (5, 5, '2025-05-30');
  
 INSERT INTO Oversees VALUES (1, 1, 'Good standing');
 INSERT INTO Oversees VALUES (1, 2, 'Occasional disputes');
+INSERT INTO Oversees VALUES (1, 7, 'Good standing');
+INSERT INTO Oversees VALUES (1, 14, 'Consistent participant');
+INSERT INTO Oversees VALUES (1, 20, 'No issues noted');
+INSERT INTO Oversees VALUES (2, 1, 'Consistent performance');
 INSERT INTO Oversees VALUES (2, 3, 'No issues');
+INSERT INTO Oversees VALUES (2, 8, 'Occasional disputes');
+INSERT INTO Oversees VALUES (2, 15, 'Minor infractions');
+INSERT INTO Oversees VALUES (2, 21, 'Generally cooperative');
+INSERT INTO Oversees VALUES (3, 1, 'No complaints');
 INSERT INTO Oversees VALUES (3, 4, 'Under review');
+INSERT INTO Oversees VALUES (3, 9, 'No issues');
+INSERT INTO Oversees VALUES (3, 16, 'Excellent behavior');
+INSERT INTO Oversees VALUES (3, 22, 'Model player');
+INSERT INTO Oversees VALUES (3, 2, 'Positive engagement');
+INSERT INTO Oversees VALUES (4, 1, 'Active participant');
 INSERT INTO Oversees VALUES (4, 5, 'Excellent behavior');
+INSERT INTO Oversees VALUES (4, 10, 'Under review');
+INSERT INTO Oversees VALUES (4, 17, 'Needs monitoring');
+INSERT INTO Oversees VALUES (4, 23, 'Improvement noted');
+INSERT INTO Oversees VALUES (4, 3, 'Satisfactory');
+INSERT INTO Oversees VALUES (5, 1, 'Good standing');
 INSERT INTO Oversees VALUES (5, 6, 'No issues');
+INSERT INTO Oversees VALUES (5, 11, 'Excellent behavior');
+INSERT INTO Oversees VALUES (5, 18, 'Top performer');
+INSERT INTO Oversees VALUES (5, 24, 'No complaints');
+INSERT INTO Oversees VALUES (5, 4, 'Highly rated');
  
 INSERT INTO Joins VALUES (1, 1, '2025-02-20');
 INSERT INTO Joins VALUES (2, 1, '2025-02-21');
@@ -569,57 +627,3 @@ INSERT INTO Joins VALUES (20, 15, '2025-12-01');
 INSERT INTO Joins VALUES (21, 15, '2025-12-02');
 INSERT INTO Joins VALUES (22, 15, '2025-12-03');
 INSERT INTO Joins VALUES (23, 15, '2025-12-03');
-
--- ------------------------------------------------------------
--- TRIGGERS (Were messing with the same game logic )
--- ------------------------------------------------------------
-
--- Drop triggers if they already exist
--- DROP TRIGGER IF EXISTS after_match_winner_update;
--- DROP TRIGGER IF EXISTS after_tournament_insert;
-
--- -- ------------------------------------------------------------
--- -- Trigger 1: Auto-update Player stats when a Match Winner is set,
--- -- increment TotalWins for the winner and TotalLosses for the loser
-
--- DELIMITER $$
-
--- CREATE TRIGGER after_match_winner_update
--- AFTER UPDATE ON Match_Contained
--- FOR EACH ROW
--- BEGIN
--- 	-- Fire if winner is just set
--- 	IF OLD.Winner_ID IS NULL AND NEW.Winner_ID IS NOT NULL THEN
-
--- 		UPDATE Player
--- 		SET TotalWins = TotalWins + 1
--- 		WHERE PlayerID = NEW.Winner_ID;
-
--- 		UPDATE Player
--- 		SET TotalLosses = TotalLosses + 1
--- 		WHERE PlayerID = (
--- 			SELECT CASE
--- 				WHEN Player1_ID = NEW.Winner_ID THEN Player2_ID
--- 				ELSE Player1_ID
--- 			END
--- 			FROM Plays_inMatch
--- 			WHERE MatchID = NEW.MatchID
--- 		);
-
--- 	END IF;
--- END$$
-
--- -- ------------------------------------------------------------
--- -- Trigger 2: Auto-increment Tournaments_Organized for a Manager,
--- -- automatically update the manager's Tournaments_Organized count
-
--- CREATE TRIGGER after_tournament_insert
--- AFTER INSERT ON Tournament_Managed
--- FOR EACH ROW
--- BEGIN
--- 	UPDATE TournamentManager
--- 	SET Tournaments_Organized = Tournaments_Organized + 1
--- 	WHERE ManagerID = NEW.ManagerID;
--- END$$
-
--- DELIMITER ;
