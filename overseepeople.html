@@ -221,7 +221,7 @@
             <td>${a.UserID}</td>
             <td>${a.Username}</td>
             <td>${a.Email}</td>
-            ${showComments ? `<td>${a.AdminID}</td><td>${a.Admin_Comments}</td>` : ''}
+            ${showComments ? `<td>${a.AdminID ?? ''}</td><td>${a.Admin_Comments ?? ''}</td>` : ''}
         `;
         row.addEventListener('click', () => selectRow(row, a.UserID));
         tbody.appendChild(row);
@@ -275,7 +275,7 @@
       }
       const user = allUsers.find(a => a.UserID  == selectedID);
       document.getElementById('edit-id').value = user.UserID;
-      document.getElementById('edit-comment').value = user.Admin_Comments;
+      document.getElementById('edit-comment').value = user.Admin_Comments ?? '';
       document.getElementById('edit-msg').textContent = '';
       document.getElementById('edit-modal').style.display = 'flex';
     }
