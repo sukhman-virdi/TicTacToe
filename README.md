@@ -1,12 +1,15 @@
 =======================================================================
 # TICTACTOE GAME DATABASE & WEBSITE
 =======================================================================  
+
 Created For: Langara College - CPSC 2221 - Final Project  
-Created By: Alberto Urquidi, Alessandro Verga, Tomoyoshi Sakai, Sukhmanpreet Singh
+Created By: Alberto Urquidi, Alessandro Verga, Tomoyoshi Sakai, Sukhmanpreet Singh  
+https://github.com/sukhman-virdi/TicTacToe
 
 =====================================================
 ## PROJECT DESCRIPTION
 =====================================================  
+
 The TicTacToe Platform is a web application built using PHP, MySQL, HTML, CSS, and JavaScript. 
 Players can play TicTacToe against an AI opponent, track their stats, view a live leaderboard, 
 replay past matches move by move, and join tournaments. Administrators can manage achievements and oversee users.
