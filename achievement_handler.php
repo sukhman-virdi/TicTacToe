@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     } else if ($action === 'awarded') {
         $result = mysqli_query($conn,
-            "SELECT gu.Username, a.Title, aw.AwardDate
+            "SELECT gu.UserID, gu.Username, a.AchievementID, a.Title, aw.AwardDate
              FROM Awarded aw
              JOIN GameUser gu ON aw.UserID = gu.UserID
              JOIN Achievement a ON aw.AchievementID = a.AchievementID
@@ -182,7 +182,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             echo json_encode(['error' => 'Failed to delete achievement']);
         }
 
-    } else {
+    } else if ($action === 'addAward') {
+        $id    = $_POST['AchievementID'];
+        $userid = $_POST['UserID'];
+
+        // Check if ID already exists
+        $check = mysqli_prepare($conn,
+            "SELECT AchievementID FROM Awarded WHERE AchievementID = ? and UserID = ?"
+        );
+        mysqli_stmt_bind_param($check, 'ii', $id, $userid);
+        mysqli_stmt_execute($check);
+        mysqli_stmt_store_result($check);
+
+        if (mysqli_stmt_num_rows($check) > 0) {
+            echo json_encode(['error' => 'Achievement ID already exists for the user']);
+            exit;
+        }
+
+        // Insert new award
+        $stmt = mysqli_prepare($conn,
+            "INSERT INTO Awarded (AchievementID, UserID, AwardDate) VALUES (?, ?, NOW())"
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $id, $userid);
+
+        if (mysqli_stmt_execute($stmt)) {
+            $check = mysqli_prepare($conn,
+                "SELECT gu.Username, a.Title
+                FROM Awarded aw
+                JOIN GameUser gu ON aw.UserID = gu.UserID
+                JOIN Achievement a ON aw.AchievementID = a.AchievementID
+                WHERE aw.AchievementID = ? AND aw.UserID = ?"
+            );
+
+            mysqli_stmt_bind_param($check, 'ii', $id, $userid);
+            mysqli_stmt_execute($check);
+
+            $result = mysqli_stmt_get_result($check);
+            $row = mysqli_fetch_assoc($result);
+
+            echo json_encode([
+                'success' => true,
+                'Username' => $row['Username'],
+                'Title' => $row['Title']
+            ]);
+        } else {
+            echo json_encode(['error' => 'Failed to add achievement']);
+        }
+
+    } else if ($action === 'deleteAward') {
+        $id = $_POST['AchievementID'];
+        $userid = $_POST['UserID'];
+
+        // Check award exists
+        $check = mysqli_prepare($conn,
+            "SELECT AchievementID FROM Awarded WHERE AchievementID = ? and UserID = ?"
+        );
+        mysqli_stmt_bind_param($check, 'ii', $id, $userid);
+        mysqli_stmt_execute($check);
+        mysqli_stmt_store_result($check);
+
+        if (mysqli_stmt_num_rows($check) === 0) {
+            echo json_encode(['error' => "No award found with AcievementID $id and UserID $userid"]);
+            exit;
+        }
+
+        // Delete award (cascade handles related records)
+        $stmt = mysqli_prepare($conn,
+            "DELETE FROM Awarded WHERE AchievementID = ? and UserID = ?"
+        );
+        mysqli_stmt_bind_param($stmt, 'ii', $id, $userid);
+
+        if (mysqli_stmt_execute($stmt)) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => 'Failed to delete award']);
+        }
+
+    }else {
         echo json_encode(['error' => 'Invalid action']);
     }
 }

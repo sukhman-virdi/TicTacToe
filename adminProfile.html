@@ -9,9 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="profile.css"/>
+  <style>
+  #supervise-tbody tr,
+  #supervise-tbody th,
+  .box-table thead tr,
+  .box-table tbody tr {
+    display: table-row; 
+  }
+  .box-table th {
+    display: table-cell; 
+  }
+  </style>
 </head>
 <body>
- 
   <div class="sidebar">
     <nav class="sidebar-nav">
       <div class="logo-container">
@@ -34,9 +44,6 @@
   <main class="main">
     <div class="card">
       <h1 class="title" id="username">Username</h1>
-      <p class="login-link">
-        <a href="editprofile.html">Edit Profile</a>
-      </p>    
     <div class="boxes-row">
   <div class="box">
     <h3>Admin Information</h3>
@@ -63,6 +70,7 @@
   <div class="box">
     <h3>Supervise Tournaments</h3>
     <hr/>
+    <div class="table-wrapper">
     <table class="box-table">
       <thead>
         <tr>
@@ -71,10 +79,11 @@
           <th>ManagerID</th>
         </tr>    
       </thead>
-      <tbody id ="supervise-tbody">   
-        <!-- Fill in table with supervise data collected from database -->
-      </tbody>
+        <tbody id ="supervise-tbody">   
+          <!-- Fill in table with supervise data collected from database -->
+        </tbody>
     </table>
+    </div>
   </div>
 </div>  
  
@@ -123,7 +132,6 @@
         fetch(`get_supervise.php?id=${adminID}`)
           .then(res => res.json())
           .then(supervise => {
-            console.log(supervise)
             const tbody = document.getElementById('supervise-tbody');
             tbody.innerHTML = '';
             if (supervise.length === 0) {

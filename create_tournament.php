@@ -23,6 +23,7 @@ $body       = json_decode(file_get_contents('php://input'), true);
 $name       = trim($body['name'] ?? '');
 $startDate  = $body['start_date'] ?? '';
 $difficulty = (int) ($body['difficulty'] ?? 0);
+$supervisorID = (int) ($body['SupervisorID'] ?? 0);
 
 if (!$name || !$startDate || !$difficulty) {
     echo json_encode(['success' => false, 'message' => 'All fields are required']);
@@ -35,12 +36,15 @@ if ($difficulty < 1 || $difficulty > 5) {
 }
 
 // Get a supervisor (first available admin)
-$adminRow = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AdminID FROM Admin LIMIT 1"));
-if (!$adminRow) {
-    echo json_encode(['success' => false, 'message' => 'No admin available to supervise']);
-    exit;
+if($supervisorID===0){
+    $adminRow = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AdminID FROM Admin LIMIT 1"));
+    if (!$adminRow) {
+        echo json_encode(['success' => false, 'message' => 'No admin available to supervise']);
+        exit;
+    }
+    $supervisorID = (int) $adminRow['AdminID'];
 }
-$supervisorID = (int) $adminRow['AdminID'];
+
 
 // Generate next TournamentID manually
 $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COALESCE(MAX(TournamentID), 0) + 1 AS nextID FROM Tournament_Managed"));
