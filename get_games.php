@@ -1,14 +1,14 @@
 <?php
 include 'db.php';
-
+ 
 $id = $_GET['id'];
-
+ 
 $query = "
     SELECT
         m.MatchID,
         m.Match_Date,
         m.Match_Time,
-        CASE WHEN m.TournamentID IS NULL THEN 'AI Game' ELSE t.Name END AS TournamentName,
+        COALESCE(t.Name, 'AI Match') AS TournamentName,
         CASE
             WHEN m.Winner_ID = ? THEN 'Win'
             WHEN m.Winner_ID IS NULL THEN 'Draw'
@@ -27,19 +27,19 @@ $query = "
     ORDER BY m.Match_Date DESC, m.Match_Time DESC
     LIMIT 10
 ";
-
+ 
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, 'iiii', $id, $id, $id, $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-
+ 
 $games = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $games[] = $row;
 }
-
+ 
 header('Content-Type: application/json');
 echo json_encode($games);
-
+ 
 mysqli_close($conn);
 ?>
