@@ -4,11 +4,15 @@ $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass = $_POST['pass'] ?? '';
 
-    $conn = @mysqli_connect('localhost', 'root', $pass, 'tictactoe');
+    $conn = @mysqli_connect('localhost', 'root', $pass);
 
     if (!$conn) {
         $msg = '❌ Wrong password.';
     } else {
+        //Create database
+        mysqli_query($conn, 'CREATE DATABASE IF NOT EXISTS ticatactoe');
+        mysqli_select_db($conn, 'tictactoe');
+
         // Run SQL file
         $sql = file_get_contents(__DIR__ . '/create_tables.sql');
         mysqli_multi_query($conn, $sql);
