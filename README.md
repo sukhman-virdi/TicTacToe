@@ -49,17 +49,14 @@ Copy all submitted project files into the tictactoe folder (all files flat, no s
 
 -----------------------------------------------  
 
-Step 3 - Set Up the Database  
-Open Command Prompt and navigate to the MySQL bin folder: 
-cd C:\xampp\mysql\bin  
-Run the setup script: 
-mysql -u root -p tictactoe < "C:\xampp\htdocs\tictactoe\create_tables.sql"  
-Enter your xampp admin password. Press Enter when prompted for no password (default XAMPP has no password)
+Step 3 - Run setup script
+Open browser and go to http://localhost/tictactoe/setup.php
+Enter your phpadmin password(leave blank if you have not set up a password)
+If successful, click 'Go to app' link to open website 
 
 -----------------------------------------------  
 
-Step 4 - Run the Application  
-Open your browser and go to: http://localhost/tictactoe/home.html  
+Step 4 - Sign up and Explore   
 Click Sign Up to create a player account, or use Login > Staff Login for admin/manager access  
 
 -----------------------------------------------   
