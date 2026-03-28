@@ -34,26 +34,30 @@
     <div class="card">
       <h1 class="title">Leaderboard</h1>
     <div class="boxes-row"> 
-    <div class="box"> 
-  <h3>Top Players</h3>  
-  <p id="statsP" style="text-align: right">Total number of players:  | Average points: </p>
-  <hr/>
-  <table class="box-table">
-        <thead>
-        <tr>
-            <th>Rank</th>
-            <th>Username</th>
-            <th>Wins</th>
-            <th>Losses</th>
-            <th>Draws</th>
-            <th>Ranked Points</th>
-        </tr>    
-        </thead>
-        <tbody id="players-tbody"></tbody>
-    </table>
-    <div id="current-user"></div>
-    </div>
-    <div class="box">
+ 
+      <!-- Top Players Box -->
+      <div class="box"> 
+        <h3>Top Players</h3>  
+        <p id="statsP" style="text-align: right">Total number of players:  | Average points: </p>
+        <hr/>
+        <table class="box-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Draws</th>
+              <th>Ranked Points</th>
+            </tr>    
+          </thead>
+          <tbody id="players-tbody"></tbody>
+        </table>
+        <div id="current-user"></div>
+      </div>
+ 
+      <!-- Nested Aggregation Box -->
+      <div class="box">
         <h3>High Skill Difficulty Levels</h3>
         <p id="difficultySubtitle" style="font-size: 0.85rem; color: #888;">
           Difficulty levels where average player ranking exceeds the platform average
@@ -70,26 +74,26 @@
             <tr><td colspan="2">Loading...</td></tr>
           </tbody>
         </table>
-    </div>
-      
+      </div>
+ 
     </div>  
  
     
-
-
+ 
+ 
     </div>  
   </main>
 </div> 
   
 <script>
-
+ 
   //Load greeting message
    fetch('get_session.php')
       .then(res => res.json())
       .then(data => {
         const greeting = document.getElementById('greeting');
         const signout = document.getElementById('signout');
-
+ 
         if (data.loggedIn) {
           greeting.textContent = `Hello, ${data.username}`;
           signout.style.display = 'block'; 
@@ -99,17 +103,16 @@
         }
       })
       .catch(err => console.error(err));
-
+ 
   fetch('total_stats.php')
   .then(res => res.json())
   .then(data => {
+    // Update stats line
     const stats = document.getElementById('statsP');
-    
     if (stats) {
-      // Use backticks for template literals
       stats.textContent = `Number of Players: ${data.totalPlayers} | Average Points: ${data.avgPoints}`;
     }
-
+ 
     // Update subtitle with actual average for context
     const subtitle = document.getElementById('difficultySubtitle');
     if (subtitle) {
@@ -133,7 +136,7 @@
     }
   })
   .catch(err => console.error("Error loading stats: ", err));
-
+ 
   fetch('display_players.php')
     .then(res => res.json())
     .then(data => {
@@ -141,23 +144,23 @@
       const currentUserDiv = document.getElementById('current-user');
       
       tbody.innerHTML = '';
-
+ 
       if (data.topPlayers.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6">No players yet</td></tr>';
         return;
       }
-
+ 
       let currentUserInTop10 = false;
-
+ 
       data.topPlayers.forEach((player, index) => {
         const row = document.createElement('tr');
         const isCurrentUser = data.currentUser && player.PlayerID == data.currentUser.PlayerID;
-
+ 
         if (isCurrentUser) {
           currentUserInTop10 = true;
           row.style.backgroundColor = '#ffe9b2';
         }
-
+ 
         // Always set row content regardless of whether it's the current user
         row.innerHTML = `
           <td>${index + 1}</td>
@@ -167,16 +170,16 @@
           <td>${player.TotalDraws}</td>
           <td>${player.RankingPoints}</td>
         `;
-
+ 
         tbody.appendChild(row);
       });
-
+ 
       // If logged in but not in top 10, show them at the bottom
       if (data.currentUser && !currentUserInTop10) {
         const separatorRow = document.createElement('tr');
         separatorRow.innerHTML = `<td colspan="6" style="text-align:center; color:#aaa; letter-spacing:4px; padding:6px;">• • •</td>`;
         tbody.appendChild(separatorRow);
-
+ 
         const userRow = document.createElement('tr');
         userRow.style.backgroundColor = '#ffe9b2';
         userRow.innerHTML = `
@@ -189,13 +192,13 @@
         `;
         tbody.appendChild(userRow);
       }
-
+ 
       currentUserDiv.innerHTML = '';
     })
     .catch(err => console.log('Error loading players:', err));
   </script>
-
-
+ 
+ 
 </body> 
 </html>  
 
