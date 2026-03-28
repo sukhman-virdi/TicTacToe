@@ -33,37 +33,37 @@ The database schema follows 3NF normalization across 15 tables. All queries use 
 ## SETUP INSTRUCTIONS
 =====================================================  
 
-Step 1 - Install XAMPP
-Download XAMPP
-Install XAMPP with default settings
-Launch the XAMPP Control Panel
-Start both the Apache and MySQL modules
+Step 1 - Install XAMPP  
+Download XAMPP  
+Install XAMPP with default settings  
+Launch the XAMPP Control Panel  
+Start both the Apache and MySQL modules  
 
 -----------------------------------------------  
 
-Step 2 - Copy Project Files
-Navigate to C:\xampp\htdocs
-Create a new folder named tictactoe
-Copy all submitted project files into the tictactoe folder (all files flat, no subfolders other than /assets)
+Step 2 - Copy Project Files  
+Navigate to C:\xampp\htdocs  
+Create a new folder named tictactoe  
+Copy all submitted project files into the tictactoe folder (all files flat, no subfolders other than /assets)  
 
 -----------------------------------------------  
 
-Step 3 - Set Up the Database
-Open Command Prompt and navigate to the MySQL bin folder:
-cd C:\xampp\mysql\bin
-Run the setup script:
-mysql -u root -p tictactoe < "C:\xampp\htdocs\tictactoe\create_tables.sql"
+Step 3 - Set Up the Database  
+Open Command Prompt and navigate to the MySQL bin folder: 
+cd C:\xampp\mysql\bin  
+Run the setup script: 
+mysql -u root -p tictactoe < "C:\xampp\htdocs\tictactoe\create_tables.sql"  
 Enter your xampp admin password. Press Enter when prompted for no password (default XAMPP has no password)
 
 -----------------------------------------------  
 
-Step 4 - Run the Application
-Open your browser and go to: http://localhost/tictactoe/home.html
-Click Sign Up to create a player account, or use Login > Staff Login for admin/manager access
+Step 4 - Run the Application  
+Open your browser and go to: http://localhost/tictactoe/home.html  
+Click Sign Up to create a player account, or use Login > Staff Login for admin/manager access  
 
 -----------------------------------------------   
 
 Troubleshooting
-Connection error — make sure MySQL is running in the XAMPP Control Panel
-Access denied — press Enter for an empty password at the CMD prompt
-Pages not found — confirm the folder is named tictactoe inside htdocs
+Connection error — make sure MySQL is running in the XAMPP Control Panel  
+Access denied — press Enter for an empty password at the CMD prompt  
+Pages not found — confirm the folder is named tictactoe inside htdocs  
