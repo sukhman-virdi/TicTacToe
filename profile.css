@@ -118,6 +118,28 @@ hr {
   font-size: 0.9rem;
 }
 
+.box-table-row {
+  display: flex;
+  flex-direction: row;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+ 
+.box-table-row:last-child {
+  border-bottom: none;
+}
+ 
+.box-table-cell {
+  flex: 1;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  color: #444;
+}
+ 
+.box-table-cell:first-child {
+  font-weight: 700;
+  color: #333;
+}
 
 .box-table th {
   text-align: left;
