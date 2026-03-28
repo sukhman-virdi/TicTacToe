@@ -206,7 +206,8 @@ body {
   gap: 16px;
 }
 
-.modal-title {
+.modal-title,
+.modal-user {
   font-family: 'Righteous', cursive;
   font-size: 1.5rem;
   color: var(--amber);
