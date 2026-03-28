@@ -2,7 +2,8 @@
 header('Content-Type: application/json');
 session_start();
  
-include 'db.php';
+$conn = new mysqli("localhost", "root", "", "tictactoe");
+ 
 // Top 10 players
 $query = "SELECT p.PlayerID, gu.Username, p.TotalWins, p.TotalLosses, p.TotalDraws, p.RankingPoints
           FROM Player p
@@ -32,7 +33,6 @@ if (isset($_SESSION['userID'])) {
     $stmt->execute();
     $currentUser = $stmt->get_result()->fetch_assoc();
  
-    // Calculate rank for current user
     if ($currentUser) {
         $rankStmt = $conn->prepare(
             "SELECT COUNT(*) + 1 AS Rank FROM Player
