@@ -1,8 +1,8 @@
 =======================================================================
 # TICTACTOE GAME DATABASE & WEBSITE
 =======================================================================  
-Created for: Langara College - CPSC 2221 - Final Project
-Created by: Alberto Urquidi, Alessandro Verga, Tomoyoshi Sakai, Sukhmanpreet Singh
+Created For: Langara College - CPSC 2221 - Final Project  
+Created By: Alberto Urquidi, Alessandro Verga, Tomoyoshi Sakai, Sukhmanpreet Singh
 
 =====================================================
 ## PROJECT DESCRIPTION
@@ -12,22 +12,20 @@ Players can play TicTacToe against an AI opponent, track their stats, view a liv
 replay past matches move by move, and join tournaments. Administrators can manage achievements and oversee users.
 Tournament Managers can create and manage tournaments.
 
-
 =====================================================
 ## CORE FEATURES
 =====================================================  
 
-Player authentication - sign up, log in, and session-based access control with role detection (Player, Manager, Admin)
-TicTacToe game vs AI - matches automatically saved to the database including all moves, result, and updated player stats
-Player profile - displays wins, losses, draws, ranking points, recent match history, and achievements
-Leaderboard - top 10 players by ranking points with current user highlighted even if outside top 10, plus nested aggregation results
-Tournament system - managers create tournaments, players join them through the Join Tournament page
-Achievement system - admins add, edit, and delete achievements; players earn them through gameplay
-Admin panel - oversee users with comment system, edit admin levels with projection query, division query for fully-reviewed users
+Player authentication - sign up, log in, and session-based access control with role detection (Player, Manager, Admin)  
+TicTacToe game vs AI - matches automatically saved to the database including all moves, result, and updated player stats  
+Player profile - displays wins, losses, draws, ranking points, recent match history, and achievements  
+Leaderboard - top 10 players by ranking points with current user highlighted even if outside top 10, plus nested aggregation results  
+Tournament system - managers create tournaments, players join them through the Join Tournament page  
+Achievement system - admins add, edit, and delete achievements; players earn them through gameplay  
+Admin panel - oversee users with comment system, edit admin levels with projection query, division query for fully-reviewed users  
 Real-time availability checking - username and email uniqueness verified instantly during sign up
-
+  
 The database schema follows 3NF normalization across 15 tables. All queries use prepared statements.
-
 
 =====================================================
 ## SETUP INSTRUCTIONS
@@ -63,7 +61,7 @@ Click Sign Up to create a player account, or use Login > Staff Login for admin/m
 
 -----------------------------------------------   
 
-Troubleshooting
+Troubleshooting  
 Connection error — make sure MySQL is running in the XAMPP Control Panel  
 Access denied — press Enter for an empty password at the CMD prompt  
 Pages not found — confirm the folder is named tictactoe inside htdocs  
