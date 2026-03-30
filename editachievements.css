@@ -262,3 +262,45 @@ textarea:focus { border-color: var(--amber); }
 
 .result-msg.success { color: green; }
 .result-msg.error   { color: red; }
+
+.results-box {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.results-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#awarded-tbody,
+#achievements-tbody{
+  display: block;
+  max-height: calc(10 * 41px);
+  overflow-y: auto;
+  width: 100%;
+}
+
+
+#people-tbody {
+  display: block;
+  max-height: calc(15 * 41px);
+  overflow-y: auto;
+  width: 100%;
+}
+
+#achievements-tbody tr,
+#awarded-tbody tr,
+#people-tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
