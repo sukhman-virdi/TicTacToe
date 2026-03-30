@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = '❌ Wrong password.';
     } else {
         //Create database
-        mysqli_query($conn, 'CREATE DATABASE IF NOT EXISTS ticatactoe');
+        mysqli_query($conn, 'CREATE DATABASE IF NOT EXISTS tictactoe');
         mysqli_select_db($conn, 'tictactoe');
 
         // Run SQL file
