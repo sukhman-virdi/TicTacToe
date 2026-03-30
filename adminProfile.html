@@ -129,8 +129,7 @@
         fetch(`get_admin.php?id=${adminID}`)
           .then(res => res.json())
           .then(admin => {
-            console.log(admin);
-            document.getElementById('username').textContent = data.name;
+            document.getElementById('username').textContent = admin.Name;
             document.getElementById('adminID').textContent = admin.AdminID;
             document.getElementById('name').textContent = admin.Name;
             document.getElementById('email').textContent = admin.Email;

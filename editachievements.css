@@ -281,26 +281,21 @@ textarea:focus { border-color: var(--amber); }
   table-layout: fixed;
 }
 
+#achievements-tbody,
 #awarded-tbody,
-#achievements-tbody{
-  display: block;
-  max-height: calc(10 * 41px);
-  overflow-y: auto;
-  width: 100%;
-}
-
-
 #people-tbody {
   display: block;
-  max-height: calc(15 * 41px);
+  max-height: 400px;
   overflow-y: auto;
-  width: 100%;
 }
-
-#achievements-tbody tr,
-#awarded-tbody tr,
-#people-tbody tr {
+table thead,
+table tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;
+}
+th, td {
+  width: 20%; 
+    word-break: break-word;
+  overflow-wrap: break-word;
 }

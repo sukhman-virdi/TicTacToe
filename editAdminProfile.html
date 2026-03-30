@@ -18,11 +18,11 @@
           <img src="assets/tttLogo.png" alt="logo" class="logo">
         </a>
       </div> 
-      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
-      <button class="nav-btn" onclick="window.location.href='play.html'">🎮 Play</button>
-      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
-      <button class="nav-btn" onclick="window.location.href='matches.html'">🔍 Matches</button>
-      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <button class="nav-btn" onclick="window.location.href='adminHome.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='overseepeople.html'">👥 Oversee People</button>
+      <button class="nav-btn" onclick="window.location.href='editAdmin.html'">✏️ Edit Admins</button>
+      <button class="nav-btn" onclick="window.location.href='editachievements.html'">🏆 Edit Achievement</button>
+      <button class="nav-btn" onclick="window.location.href='adminProfile.html'">👤 Profile</button>
       <p id="greeting"></p>
       <p class="signout-link" id="signout">
         <a href="logout.php">Sign Out</a>
@@ -164,7 +164,7 @@
       .then(data => {
         if (data.success) {
           alert('Profile updated!');
-          window.location.href = 'profile.html';
+          window.location.href = 'adminProfile.html';
         } else {
           resultMsg.textContent = data.error || 'Update failed';
           resultMsg.className   = 'result-msg error';
