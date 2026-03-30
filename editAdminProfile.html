@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe - Edit Profile</title>
+  <link rel="icon" type="image/x-icon" href="/tictactoe/assets/logo.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="createaccount.css"/> 
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <div class="logo-container">
+        <a href="home.html">
+          <img src="assets/tttLogo.png" alt="logo" class="logo">
+        </a>
+      </div> 
+      <button class="nav-btn" onclick="window.location.href='home.html'">🏠 Home</button>
+      <button class="nav-btn" onclick="window.location.href='play.html'">🎮 Play</button>
+      <button class="nav-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+      <button class="nav-btn" onclick="window.location.href='matches.html'">🔍 Matches</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <p id="greeting"></p>
+      <p class="signout-link" id="signout">
+        <a href="logout.php">Sign Out</a>
+      </p>
+    </nav>
+  </div> 
+
+  <main class="main">
+    <div class="card">
+      <h1 class="title">Edit Admin Profile</h1>
+
+
+      <div class="form-group">
+        <label for="name">Change Name</label>
+        <input type="text" id="name" placeholder="Name"/>
+        <span class="field-msg" id="name-msg"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Change Email</label>
+        <input type="email" id="email" placeholder="Email"/>
+        <span class="field-msg" id="email-msg"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="currentPassword">Enter Current Password</label>
+        <input type="password" id="currentPassword" placeholder="Current password"/>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Change Password</label>
+        <input type="password" id="password" placeholder="Enter New password"/>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm password"/>
+        <span class="field-msg" id="password-msg"></span>
+      </div>
+
+      <button class="btn btn-play" onclick="handleChanges()">
+        <span>Save Changes</span>
+      </button>
+
+      <p class="result-msg" id="result-msg"></p>
+
+    </div>
+  </main>
+
+  <script>
+  let currentName = "";
+  let currentEmail = "";
+
+  // Pre-fill fields with current admin info
+  fetch('get_adminSession.php')
+  .then(res => res.json())
+  .then(session => {
+    if (!session.loggedIn) {
+      window.location.href = 'adminLogin.html';
+      return;
+    }
+
+    // Greeting
+    document.getElementById('greeting').textContent = `Hello, ${session.name}`;
+    document.getElementById('signout').style.display = 'block';
+
+    return fetch(`get_admin.php?id=${session.adminID}`);
+  })
+  .then(res => res.json())
+  .then(admin => {
+    document.getElementById('name').value  = admin.Name;
+    document.getElementById('email').value = admin.Email;
+    currentName  = admin.Name;
+    currentEmail = admin.Email;
+  })
+  .catch(err => console.error('Error loading profile:', err));
+
+  // Name validation
+  document.getElementById('name').addEventListener('input', function() {
+    const name = this.value.trim();
+    const msg  = document.getElementById('name-msg');
+    if (name.length < 3) {
+      msg.textContent = 'Name must be at least 3 characters';
+      msg.className   = 'field-msg error';
+    } else {
+      msg.textContent = '';
+    }
+  });
+
+  // Email availability check
+  document.getElementById('email').addEventListener('input', function() {
+    const email = this.value.trim();
+    const msg   = document.getElementById('email-msg');
+    if (!email.includes('@')) return;
+    if (email !== currentEmail) {
+      fetch(`check_adminAvailability.php?field=Email&value=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.taken) {
+            msg.textContent = '✗ Email already registered';
+            msg.className   = 'field-msg error';
+          } else {
+            msg.textContent = '✓ Email available';
+            msg.className   = 'field-msg success';
+          }
+        });
+    }
+  });
+
+  // Save changes
+  function handleChanges() {
+    const name            = document.getElementById('name').value.trim();
+    const email           = document.getElementById('email').value.trim();
+    const currentPassword = document.getElementById('currentPassword').value.trim();
+    const newPassword     = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
+    const resultMsg       = document.getElementById('result-msg');
+
+    if (!currentPassword) {
+      resultMsg.textContent = 'Please enter your current password to authorize changes';
+      resultMsg.className   = 'result-msg error';
+      return;
+    }
+
+    if (newPassword && newPassword !== confirmPassword) {
+      resultMsg.textContent = 'New passwords do not match';
+      resultMsg.className   = 'result-msg error';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('currentPassword', currentPassword);
+    formData.append('newPassword', newPassword);
+
+    fetch('update_profile.php', { method: 'POST', body: formData })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Profile updated!');
+          window.location.href = 'profile.html';
+        } else {
+          resultMsg.textContent = data.error || 'Update failed';
+          resultMsg.className   = 'result-msg error';
+        }
+      })
+      .catch(() => {
+        resultMsg.textContent = 'Server error';
+      });
+  }
+</script>
+
+</body>
+</html>
