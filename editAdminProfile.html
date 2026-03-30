@@ -159,7 +159,7 @@
     formData.append('currentPassword', currentPassword);
     formData.append('newPassword', newPassword);
 
-    fetch('update_profile.php', { method: 'POST', body: formData })
+    fetch('update_admin_profile.php', { method: 'POST', body: formData })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
