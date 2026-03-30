@@ -4,21 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tic Tac Toe</title>
-  <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
-  <link rel="icon" type="image/x-icon" href="/assets/logo.ico">
+  <link rel="icon" type="image/x-icon" href="/tictactoe/assets/logo.ico">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="profile.css"/>
   <style>
-  #supervise-tbody tr,
-  #supervise-tbody th,
-  .box-table thead tr,
-  .box-table tbody tr {
-    display: table-row; 
-  }
-  .box-table th {
-    display: table-cell; 
-  }
+    #supervise-tbody tr,
+    #supervise-tbody + thead tr,
+    .box-large .box-table thead tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .box-large .box-table th:first-child,
+    .box-large .box-table td:first-child {
+      width: 40%;
+    }
+
+    .box-large .box-table th:last-child,
+    .box-large .box-table td:last-child {
+      width: 60%;
+    }
   </style>
 </head>
 <body>
@@ -68,7 +75,7 @@
     </div>
   </div> 
   <div class="box">
-    <h3>Supervise Tournaments</h3>
+    <h3>Supervised Tournaments</h3>
     <hr/>
     <div class="table-wrapper">
     <table class="box-table">

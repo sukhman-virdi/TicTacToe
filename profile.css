@@ -189,6 +189,7 @@ hr {
 .login-link a:hover {
   text-decoration: underline;
 }
+
 #achievements-tbody tr,
 #achievements-tbody + thead tr,
 .box-large .box-table thead tr {
